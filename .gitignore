@@ -2,6 +2,7 @@
 
 ### Intellij ###
 .idea
+.idea/
 .idea_modules/
 /out/
 output/
