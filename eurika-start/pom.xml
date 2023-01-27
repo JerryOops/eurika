@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eurika-registry</artifactId>
+    <artifactId>eurika-start</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -17,6 +17,27 @@
     </properties>
 
     <dependencies>
+        <!-- internal dependencies -->
+        <dependency>
+            <groupId>com.jerryoops</groupId>
+            <artifactId>eurika-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jerryoops</groupId>
+            <artifactId>eurika-registry</artifactId>
+        </dependency>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- slf4j and log4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
