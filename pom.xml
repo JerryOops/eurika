@@ -9,10 +9,8 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>eurika-server</module>
-        <module>eurika-server</module>
         <module>eurika-common</module>
-        <module>eurika-core</module>
+        <module>eurika-registry</module>
     </modules>
 
     <properties>
