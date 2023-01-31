@@ -1,9 +1,9 @@
 package com.jerryoops.eurika.common.client;
 
 import com.jerryoops.eurika.common.config.EurikaConfig;
-import com.jerryoops.eurika.common.constant.RegistryConstant;
 import com.jerryoops.eurika.common.constant.ZookeeperConstant;
 import com.jerryoops.eurika.common.domain.exception.BusinessException;
+import com.jerryoops.eurika.common.util.ZookeeperUtil;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +20,8 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
 import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_INVALID_PARAM;
+import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_PATH_ALREADY_EXISTS;
+import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_ZOOKEEPER_CONNECTION_FAILED;
 
 
 @NoArgsConstructor
@@ -29,9 +31,6 @@ public class CuratorClient {
     @Autowired
     private EurikaConfig eurikaConfig;
 
-    @Autowired
-    private ZookeeperConstant zookeeperConstant;
-
     private CuratorFramework client;
 
 
@@ -40,13 +39,16 @@ public class CuratorClient {
      */
     @PostConstruct
     private void init() throws InterruptedException {
+        // 变量
+        Integer connectionTimeoutMillis = eurikaConfig.getRegistryConnectionTimeoutMilliseconds();
+        if (null == connectionTimeoutMillis || connectionTimeoutMillis < 0) {
+            connectionTimeoutMillis = ZookeeperConstant.DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS;
+        }
+        Integer sessionTimeoutMillis = eurikaConfig.getRegistrySessionTimeoutMilliseconds();
+        if (null == sessionTimeoutMillis || sessionTimeoutMillis < 0) {
+            sessionTimeoutMillis = ZookeeperConstant.DEFAULT_SESSION_TIMEOUT_MILLISECONDS;
+        }
         try {
-            // 变量
-            Integer maxWaitMillis = eurikaConfig.getRegistryMaxWaitMilliseconds();
-            if (null == maxWaitMillis || maxWaitMillis < 0) {
-                maxWaitMillis = RegistryConstant.DEFAULT_MAX_WAIT_MILLISECONDS;
-                log.info("Unspecified or invalid value for registry wait milliseconds, will use default value instead: " + maxWaitMillis);
-            }
             // 建立连接到registryAddress的curatorClient
             String registryAddress = eurikaConfig.getRegistryAddress();
             if (StringUtils.isBlank(registryAddress)) {
@@ -54,16 +56,17 @@ public class CuratorClient {
             }
             client = CuratorFrameworkFactory.builder()
                     .connectString(registryAddress)
-                    .sessionTimeoutMs(5000) // TODO: 2023/1/31 作为config传入
-                    .connectionTimeoutMs(maxWaitMillis)
+                    .connectionTimeoutMs(connectionTimeoutMillis)
+                    .sessionTimeoutMs(sessionTimeoutMillis)
                     .retryPolicy(new ExponentialBackoffRetry(1000, 3))
                     .build();
             client.start();
             // 阻塞检查连接状态
-            boolean isConnected = client.blockUntilConnected(maxWaitMillis, TimeUnit.MILLISECONDS);
+            boolean isConnected = client.blockUntilConnected(connectionTimeoutMillis, TimeUnit.MILLISECONDS);
             if (!isConnected) {
                 // 连接到zookeeper注册中心失败
-                throw new IllegalStateException("Exceeded maximum block-waiting time, status remained unconnected");
+                throw BusinessException.fail(EXCEPTION_ZOOKEEPER_CONNECTION_FAILED,
+                        "Exceeded maximum block-waiting time, status remained unconnected");
             }
             log.info("CuratorClient successfully built!");
         } catch (Exception e) {
@@ -73,13 +76,17 @@ public class CuratorClient {
         }
     }
 
+    /**
+     * 在zookeeper中为指定路径创建永久节点
+     * @param path
+     * @return
+     */
     public boolean createPersistent(String path) {
         try {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
             return true;
         } catch (KeeperException.NodeExistsException e) {
-            log.warn("Node already existed for path: {}", path);
-            throw new RuntimeException(e);
+            throw BusinessException.fail(EXCEPTION_PATH_ALREADY_EXISTS, "Node already existed for path: " + path);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -87,7 +94,7 @@ public class CuratorClient {
     }
 
     /**
-     * shut down everything
+     * shut down curator-related resources
      */
     private void close() {
         // TODO: 2023/1/31 清除所有已注册到zk的path

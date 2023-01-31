@@ -8,7 +8,7 @@ import lombok.Data;
  * 被提交到注册中心中。
  */
 @Data
-public class ProviderServiceInfo {
+public class ServiceInfo {
     /**
      * Full name of the service class to be registered, namely the class annotated with @EurikaService.<p>
      * e.g. com.jerryoops.FooService

@@ -1,22 +1,23 @@
 package com.jerryoops.eurika.common.util;
 
-import com.jerryoops.eurika.common.domain.ProviderServiceInfo;
+import com.jerryoops.eurika.common.domain.ServiceInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import static com.jerryoops.eurika.common.constant.RegistryConstant.DEFAULT_GROUP_NAME;
-import static com.jerryoops.eurika.common.constant.RegistryConstant.DEFAULT_VERSION;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import static com.jerryoops.eurika.common.constant.ZookeeperConstant.*;
 
 @Component
 public class ZookeeperUtil {
 
-    public String buildProviderPath(ProviderServiceInfo providerServiceInfo) {
+    public String buildProviderPath(ServiceInfo serviceInfo) {
         return this.buildProviderPath(
-                providerServiceInfo.getGroup(),
-                providerServiceInfo.getServiceName(),
-                providerServiceInfo.getVersion(),
-                providerServiceInfo.getHost() + providerServiceInfo.getPort()
+                serviceInfo.getGroup(),
+                serviceInfo.getServiceName(),
+                serviceInfo.getVersion(),
+                serviceInfo.getHost() + serviceInfo.getPort()
         );
     }
 

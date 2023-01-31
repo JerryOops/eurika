@@ -14,13 +14,13 @@ public class BusinessException extends RuntimeException {
     /**
      * 错误信息
      */
-    private String message;
+    private String msg;
 
     private BusinessException() {}
 
-    private BusinessException(Integer code, String message) {
+    private BusinessException(Integer code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
     public static BusinessException fail() {

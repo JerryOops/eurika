@@ -22,7 +22,9 @@ public class EurikaConfig {
     /**
      * 连接注册中心(zk)未成功状态的最大维持时间
      */
-    @Value("${eurika.registry.wait.millis}")
-    private Integer registryMaxWaitMilliseconds;
+    @Value("${eurika.registry.timeout.connection}")
+    private Integer registryConnectionTimeoutMilliseconds;
 
+    @Value("${eurika.registry.timeout.session}")
+    private Integer registrySessionTimeoutMilliseconds;
 }

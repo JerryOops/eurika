@@ -42,6 +42,12 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
         <!-- slf4j and log4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
