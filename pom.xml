@@ -22,6 +22,10 @@
         <curator.framework.version>2.13.0</curator.framework.version>
         <slf4j.version>1.7.30</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
+        <hutool.version>5.7.17</hutool.version>
+        <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
+        <guava.version>31.1-jre</guava.version>
+        <guava.retrying.version>2.0.0</guava.retrying.version>
         <!-- internal dependencies version -->
         <eurika.common.version>1.0-SNAPSHOT</eurika.common.version>
         <eurika.registry.version>1.0-SNAPSHOT</eurika.registry.version>
@@ -33,12 +37,12 @@
             <dependency>
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-common</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${eurika.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-registry</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${eurika.registry.version}</version>
             </dependency>
 
             <!-- Spring -->
@@ -53,6 +57,12 @@
                 <version>${spring.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
 
             <!-- lombok -->
             <dependency>
@@ -85,6 +95,35 @@
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- apache commons lang3 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons.lang3.version}</version>
+            </dependency>
+
+            <!-- guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- guava-retrying -->
+            <dependency>
+                <groupId>com.github.rholder</groupId>
+                <artifactId>guava-retrying</artifactId>
+                <version>${guava.retrying.version}</version>
+            </dependency>
+
+
 
         </dependencies>
     </dependencyManagement>

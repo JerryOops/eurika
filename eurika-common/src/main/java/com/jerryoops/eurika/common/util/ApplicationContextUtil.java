@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 @Component
-public class ApplicationContextUtils implements ApplicationContextAware {
+public class ApplicationContextUtil implements ApplicationContextAware {
     private static ApplicationContext ctx;
 
     @Override

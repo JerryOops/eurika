@@ -30,6 +30,19 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- internal dependencies -->
+        <dependency>
+            <groupId>com.jerryoops</groupId>
+            <artifactId>eurika-common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
