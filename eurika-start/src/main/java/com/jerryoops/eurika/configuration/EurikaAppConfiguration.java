@@ -9,6 +9,9 @@ public class EurikaAppConfiguration {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
+        // Ignore unspecified configuration in resource files
+        c.setIgnoreUnresolvablePlaceholders(true);
+        return c;
     }
 }

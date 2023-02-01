@@ -5,7 +5,7 @@ import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
-import com.jerryoops.eurika.common.client.CuratorClient;
+import com.jerryoops.eurika.common.client.curator.CuratorClient;
 import com.jerryoops.eurika.common.constant.ErrorCode;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.domain.exception.BusinessException;

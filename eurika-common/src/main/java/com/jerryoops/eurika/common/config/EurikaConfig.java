@@ -19,12 +19,9 @@ public class EurikaConfig {
     @Value("${eurika.registry.address}")
     private String registryAddress;
 
-    /**
-     * 连接注册中心(zk)未成功状态的最大维持时间
-     */
-    @Value("${eurika.registry.timeout.connection}")
+    @Value("${eurika.registry.timeout.connection:15000}")
     private Integer registryConnectionTimeoutMilliseconds;
 
-    @Value("${eurika.registry.timeout.session}")
+    @Value("${eurika.registry.timeout.session:60000}")
     private Integer registrySessionTimeoutMilliseconds;
 }

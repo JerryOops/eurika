@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eurika-start</artifactId>
+    <artifactId>eurika-provider</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -25,10 +25,6 @@
         <dependency>
             <groupId>com.jerryoops</groupId>
             <artifactId>eurika-registry</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-provider</artifactId>
         </dependency>
 
         <!-- Spring -->
@@ -46,10 +42,22 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <!-- junit -->
+        <!-- hutool -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
 
         <!-- slf4j and log4j -->
@@ -64,6 +72,12 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+        </dependency>
+
+        <!-- apache commons lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,9 +1,8 @@
-package com.jerryoops.eurika.common.client;
+package com.jerryoops.eurika.common.client.curator;
 
 import com.jerryoops.eurika.common.config.EurikaConfig;
 import com.jerryoops.eurika.common.constant.ZookeeperConstant;
 import com.jerryoops.eurika.common.domain.exception.BusinessException;
-import com.jerryoops.eurika.common.util.ZookeeperUtil;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,15 +29,15 @@ import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_ZOOKEEPER
 public class CuratorClient {
     @Autowired
     private EurikaConfig eurikaConfig;
-
+    @Autowired
+    private CuratorConnectionStateListener curatorConnectionStateListener;
     private CuratorFramework client;
-
 
     /**
      * Curator连接的初始化。如发生异常，则在重试达到最大上限后抛出错误。
      */
     @PostConstruct
-    private void init() throws InterruptedException {
+    private void init() {
         // 变量
         Integer connectionTimeoutMillis = eurikaConfig.getRegistryConnectionTimeoutMilliseconds();
         if (null == connectionTimeoutMillis || connectionTimeoutMillis < 0) {
@@ -60,6 +59,7 @@ public class CuratorClient {
                     .sessionTimeoutMs(sessionTimeoutMillis)
                     .retryPolicy(new ExponentialBackoffRetry(1000, 3))
                     .build();
+            client.getConnectionStateListenable().addListener(curatorConnectionStateListener);
             client.start();
             // 阻塞检查连接状态
             boolean isConnected = client.blockUntilConnected(connectionTimeoutMillis, TimeUnit.MILLISECONDS);
@@ -70,9 +70,9 @@ public class CuratorClient {
             }
             log.info("CuratorClient successfully built!");
         } catch (Exception e) {
-            this.close();
+            client.close();
             log.error("Curator initialization failed!", e);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,11 +93,4 @@ public class CuratorClient {
         }
     }
 
-    /**
-     * shut down curator-related resources
-     */
-    private void close() {
-        // TODO: 2023/1/31 清除所有已注册到zk的path
-        client.close();
-    }
 }

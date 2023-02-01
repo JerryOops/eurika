@@ -12,6 +12,7 @@
         <module>eurika-common</module>
         <module>eurika-registry</module>
         <module>eurika-start</module>
+        <module>eurika-provider</module>
     </modules>
 
     <properties>
@@ -27,9 +28,11 @@
         <guava.version>31.1-jre</guava.version>
         <guava.retrying.version>2.0.0</guava.retrying.version>
         <junit.version>4.13.2</junit.version>
+        <netty.version>4.1.86.Final</netty.version>
         <!-- internal dependencies version -->
         <eurika.common.version>1.0-SNAPSHOT</eurika.common.version>
         <eurika.registry.version>1.0-SNAPSHOT</eurika.registry.version>
+        <eurika.provider.version>1.0-SNAPSHOT</eurika.provider.version>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +47,23 @@
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-registry</artifactId>
                 <version>${eurika.registry.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.jerryoops</groupId>
+                        <artifactId>eurika-common</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.jerryoops</groupId>
+                <artifactId>eurika-provider</artifactId>
+                <version>${eurika.provider.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.jerryoops</groupId>
+                        <artifactId>eurika-common</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Spring -->
@@ -109,6 +129,13 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
             </dependency>
 
             <!-- apache commons lang3 -->
