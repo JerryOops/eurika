@@ -29,6 +29,7 @@
         <guava.retrying.version>2.0.0</guava.retrying.version>
         <junit.version>4.13.2</junit.version>
         <netty.version>4.1.86.Final</netty.version>
+        <gson.version>2.9.0</gson.version>
         <!-- internal dependencies version -->
         <eurika.common.version>1.0-SNAPSHOT</eurika.common.version>
         <eurika.registry.version>1.0-SNAPSHOT</eurika.registry.version>
@@ -156,6 +157,13 @@
                 <groupId>com.github.rholder</groupId>
                 <artifactId>guava-retrying</artifactId>
                 <version>${guava.retrying.version}</version>
+            </dependency>
+
+            <!-- gson -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
 
 

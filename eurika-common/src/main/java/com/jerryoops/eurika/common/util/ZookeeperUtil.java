@@ -1,32 +1,36 @@
 package com.jerryoops.eurika.common.util;
 
+import com.jerryoops.eurika.common.domain.ProviderLeafNode;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static com.jerryoops.eurika.common.constant.ZookeeperConstant.*;
+import static com.jerryoops.eurika.common.constant.ZookeeperConstant.EURIKA_ROOT_PATH;
+import static com.jerryoops.eurika.common.constant.ZookeeperConstant.PROVIDERS;
+import static com.jerryoops.eurika.common.constant.ZookeeperConstant.PATH_SEPARATOR;
 
 @Component
 public class ZookeeperUtil {
 
-    public String buildProviderPath(ServiceInfo serviceInfo) {
-        return this.buildProviderPath(
+    public static String buildProviderPath(ServiceInfo serviceInfo) {
+        String providerLeafNode = ProviderLeafNode.stringify(
+                ProviderLeafNode.builder()
+                        .host(serviceInfo.getHost())
+                        .port(serviceInfo.getPort())
+                        .version(serviceInfo.getVersion())
+                        .build()
+        );
+        return buildProviderPath(
                 serviceInfo.getGroup(),
                 serviceInfo.getServiceName(),
-                serviceInfo.getVersion(),
-                serviceInfo.getHost() + serviceInfo.getPort()
+                providerLeafNode
         );
     }
 
-    public String buildProviderPath(String group, String serviceName, String version, String address) {
+    private static String buildProviderPath(String group, String serviceName, String providerLeafNode) {
         return EURIKA_ROOT_PATH
                 + PATH_SEPARATOR + group
                 + PATH_SEPARATOR + serviceName
                 + PATH_SEPARATOR + PROVIDERS
-                + PATH_SEPARATOR + version
-                + PATH_SEPARATOR + address;
+                + PATH_SEPARATOR + providerLeafNode;
     }
 }

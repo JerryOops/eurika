@@ -17,8 +17,11 @@ public class ApplicationContextUtil implements ApplicationContextAware {
         ctx = applicationContext;
     }
 
-    public static Map<String, Object> getBeanMapWithAnnotation(
-            Class<? extends Annotation> annotationClazz) {
+    public static Map<String, Object> getBeanMapWithAnnotation(Class<? extends Annotation> annotationClazz) {
         return ctx.getBeansWithAnnotation(annotationClazz);
+    }
+
+    public static <T> T getBean(Class<T> clazz) {
+        return ctx.getBean(clazz);
     }
 }

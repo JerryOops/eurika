@@ -1,14 +1,19 @@
-package com.jerryoops.eurika.common.client.curator;
+package com.jerryoops.eurika.registry.client.curator;
 
+import com.jerryoops.eurika.registry.register.interfaces.RegistryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CuratorConnectionStateListener implements ConnectionStateListener {
+public class CuratorConnectionListener implements ConnectionStateListener {
+
+    @Autowired
+    private RegistryService registryService;
 
     /**
      * 最新的、与zookeeper连接的sessionId
@@ -42,6 +47,7 @@ public class CuratorConnectionStateListener implements ConnectionStateListener {
                 latestSessionId = sessionId;
                 log.warn("state = RECONNECTED, a new session is rebuilt after old session expired," +
                         " old sessionId = {}, new sessionId = {}", Long.toHexString(latestSessionId), Long.toHexString(sessionId));
+                registryService.reregisterAll();
             }
 
         } else if (newState == ConnectionState.LOST) {
