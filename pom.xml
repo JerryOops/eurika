@@ -13,6 +13,8 @@
         <module>eurika-registry</module>
         <module>eurika-start</module>
         <module>eurika-provider</module>
+        <module>eurika-consumer</module>
+        <module>eurika-test</module>
     </modules>
 
     <properties>
@@ -30,10 +32,13 @@
         <junit.version>4.13.2</junit.version>
         <netty.version>4.1.86.Final</netty.version>
         <gson.version>2.9.0</gson.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
         <!-- internal dependencies version -->
         <eurika.common.version>1.0-SNAPSHOT</eurika.common.version>
         <eurika.registry.version>1.0-SNAPSHOT</eurika.registry.version>
         <eurika.provider.version>1.0-SNAPSHOT</eurika.provider.version>
+        <eurika.consumer.version>1.0-SNAPSHOT</eurika.consumer.version>
+        <eurika.test.version>1.0-SNAPSHOT</eurika.test.version>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +49,7 @@
                 <artifactId>eurika-common</artifactId>
                 <version>${eurika.common.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-registry</artifactId>
@@ -55,10 +61,35 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-provider</artifactId>
                 <version>${eurika.provider.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.jerryoops</groupId>
+                        <artifactId>eurika-common</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jerryoops</groupId>
+                <artifactId>eurika-consumer</artifactId>
+                <version>${eurika.consumer.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.jerryoops</groupId>
+                        <artifactId>eurika-common</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jerryoops</groupId>
+                <artifactId>eurika-test</artifactId>
+                <version>${eurika.test.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.jerryoops</groupId>
@@ -164,6 +195,13 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+                <scope>provided</scope>
             </dependency>
 
 

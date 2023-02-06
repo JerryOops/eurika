@@ -3,7 +3,7 @@ package com.jerryoops.eurika.registry;
 import com.jerryoops.eurika.Application;
 import com.jerryoops.eurika.registry.client.curator.CuratorClient;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
-import com.jerryoops.eurika.registry.register.interfaces.RegistryService;
+import com.jerryoops.eurika.registry.register.RegistryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -35,7 +35,7 @@ public class CuratorClient {
     private CuratorFramework client;
 
     /**
-     * Curator连接的初始化。如发生异常，则在重试达到最大上限后抛出错误。
+     * Curator连接的初始化
      */
     @PostConstruct
     private void init() {
@@ -62,14 +62,6 @@ public class CuratorClient {
                     .build();
             client.getConnectionStateListenable().addListener(curatorConnectionStateListener);
             client.start();
-            // 阻塞检查连接状态
-            boolean isConnected = client.blockUntilConnected(connectionTimeoutMillis, TimeUnit.MILLISECONDS);
-            if (!isConnected) {
-                // 连接到zookeeper注册中心失败
-                throw EurikaException.fail(EXCEPTION_ZOOKEEPER_CONNECTION_FAILED,
-                        "Exceeded maximum block-waiting time, status remained unconnected");
-            }
-            log.info("CuratorClient successfully built!");
         } catch (Exception e) {
             client.close();
             log.error("Curator initialization failed!", e);
@@ -132,5 +124,7 @@ public class CuratorClient {
             log.warn("在删除所有节点过程中捕获异常：", e);
         }
     }
+
+
 
 }

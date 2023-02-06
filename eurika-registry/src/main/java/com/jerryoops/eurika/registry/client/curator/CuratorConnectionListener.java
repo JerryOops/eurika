@@ -1,6 +1,6 @@
 package com.jerryoops.eurika.registry.client.curator;
 
-import com.jerryoops.eurika.registry.register.interfaces.RegistryService;
+import com.jerryoops.eurika.registry.register.RegistryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
@@ -52,7 +52,7 @@ public class CuratorConnectionListener implements ConnectionStateListener {
 
         } else if (newState == ConnectionState.LOST) {
             // connection lost, 尝试重建连接
-            log.warn("[CuratorConnectionStateListener.stateChanged] state = LOST");
+            log.warn("state = LOST");
         }
     }
 }

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eurika-start</artifactId>
+    <artifactId>eurika-test</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -30,10 +30,6 @@
             <groupId>com.jerryoops</groupId>
             <artifactId>eurika-provider</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-test</artifactId>
-        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -50,6 +46,12 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
         <!-- slf4j and log4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -62,12 +64,6 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-        </dependency>
-
-        <!-- junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
         </dependency>
 
         <!-- lombok -->

@@ -11,7 +11,7 @@ import com.jerryoops.eurika.common.constant.ErrorCode;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.util.ZookeeperUtil;
-import com.jerryoops.eurika.registry.register.interfaces.RegistryService;
+import com.jerryoops.eurika.registry.register.RegistryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

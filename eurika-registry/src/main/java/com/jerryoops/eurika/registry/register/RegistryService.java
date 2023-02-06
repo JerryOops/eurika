@@ -1,4 +1,4 @@
-package com.jerryoops.eurika.registry.register.interfaces;
+package com.jerryoops.eurika.registry.register;
 
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 

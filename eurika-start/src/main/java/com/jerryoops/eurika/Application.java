@@ -1,23 +1,30 @@
 package com.jerryoops.eurika;
 
-import com.jerryoops.eurika.common.domain.ServiceInfo;
-import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.configuration.EurikaAppConfiguration;
 import com.jerryoops.eurika.provider.server.impl.NettyProviderServer;
-import com.jerryoops.eurika.registry.register.interfaces.RegistryService;
+import com.jerryoops.eurika.test.server.TestServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.PostConstruct;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Import(EurikaAppConfiguration.class)
 @ComponentScan
 public class Application {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Application.class);
-        NettyProviderServer nettyProviderServer = ctx.getBean(NettyProviderServer.class);
-        nettyProviderServer.start();
+        ExecutorService threadPool = Executors.newFixedThreadPool(2);
+        threadPool.submit(() -> {
+            NettyProviderServer nettyProviderServer = ctx.getBean(NettyProviderServer.class);
+            nettyProviderServer.start();
+        });
+        threadPool.submit(() -> {
+            // TODO: 2023/2/4 设置一个config，如果为true则启动本地调试接口
+            // 启动test server
+            TestServer testServer = ctx.getBean(TestServer.class);
+            testServer.start();
+        });
     }
 }
