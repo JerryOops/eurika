@@ -1,7 +1,7 @@
 package com.jerryoops.eurika.provider.server.impl;
 
 import cn.hutool.core.net.NetUtil;
-import com.jerryoops.eurika.common.config.EurikaConfig;
+import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.provider.server.ProviderServer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class NettyProviderServer implements ProviderServer {
 
     @Autowired
-    EurikaConfig eurikaConfig;
+    SpecifiedConfig specifiedConfig;
 
     private int port;
 

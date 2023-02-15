@@ -1,9 +1,5 @@
 package com.jerryoops.eurika.common.constant;
 
-import lombok.Getter;
-import org.springframework.stereotype.Component;
-
-@Component
 public class ZookeeperConstant {
     public static final Integer DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 15000;
     public static final Integer DEFAULT_SESSION_TIMEOUT_MILLISECONDS = 60000;

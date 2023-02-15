@@ -1,6 +1,6 @@
 package com.jerryoops.eurika.registry.client.curator;
 
-import com.jerryoops.eurika.common.config.EurikaConfig;
+import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ZookeeperConstant;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_INVALID_PARAM;
 import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_PATH_ALREADY_EXISTS;
-import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_ZOOKEEPER_CONNECTION_FAILED;
 
 
 @NoArgsConstructor
@@ -29,7 +27,7 @@ import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_ZOOKEEPER
 @Component
 public class CuratorClient {
     @Autowired
-    private EurikaConfig eurikaConfig;
+    private SpecifiedConfig specifiedConfig;
     @Autowired
     private CuratorConnectionListener curatorConnectionStateListener;
     private CuratorFramework client;
@@ -40,17 +38,17 @@ public class CuratorClient {
     @PostConstruct
     private void init() {
         // 变量
-        Integer connectionTimeoutMillis = eurikaConfig.getRegistryConnectionTimeoutMilliseconds();
+        Integer connectionTimeoutMillis = specifiedConfig.getRegistryConnectionTimeoutMilliseconds();
         if (null == connectionTimeoutMillis || connectionTimeoutMillis < 0) {
             connectionTimeoutMillis = ZookeeperConstant.DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS;
         }
-        Integer sessionTimeoutMillis = eurikaConfig.getRegistrySessionTimeoutMilliseconds();
+        Integer sessionTimeoutMillis = specifiedConfig.getRegistrySessionTimeoutMilliseconds();
         if (null == sessionTimeoutMillis || sessionTimeoutMillis < 0) {
             sessionTimeoutMillis = ZookeeperConstant.DEFAULT_SESSION_TIMEOUT_MILLISECONDS;
         }
         try {
             // 建立连接到registryAddress的curatorClient
-            String registryAddress = eurikaConfig.getRegistryAddress();
+            String registryAddress = specifiedConfig.getRegistryAddress();
             if (StringUtils.isBlank(registryAddress)) {
                 throw EurikaException.fail(EXCEPTION_INVALID_PARAM, "Host of registry is blank");
             }

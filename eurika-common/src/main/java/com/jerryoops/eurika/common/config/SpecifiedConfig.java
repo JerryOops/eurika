@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 @Configuration
 @PropertySource("classpath:eurika.properties")
-public class EurikaConfig {
+public class SpecifiedConfig {
 
     /**
      * 注册中心地址 host:port

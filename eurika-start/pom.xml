@@ -14,6 +14,8 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <!-- This is the only module that does not skip deployment -->
+        <skip.deployment>false</skip.deployment>
     </properties>
 
     <dependencies>
@@ -29,10 +31,6 @@
         <dependency>
             <groupId>com.jerryoops</groupId>
             <artifactId>eurika-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-test</artifactId>
         </dependency>
 
         <!-- Spring -->
