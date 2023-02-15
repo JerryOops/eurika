@@ -18,18 +18,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.3.0</version>
 
                 <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assemble/framework.xml</descriptor>
-                    </descriptors>
-                    <finalName>eurika</finalName>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!-- 指定jar包最终名称为eurika-all -->
+                    <finalName>eurika-all</finalName>
+                    <!-- 要求不添加assemblyId后缀，即去掉jar-with-dependencies后缀 -->
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
 
                 <executions>
                     <execution>
-                        <phase>package</phase><!-- create assembly in package phase (invoke 'single' goal on assembly plugin)-->
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
