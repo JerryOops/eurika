@@ -11,17 +11,23 @@ import static com.jerryoops.eurika.common.constant.ZookeeperConstant.PATH_SEPARA
 @Component
 public class ZookeeperUtil {
 
+    /**
+     * 用于将ServiceInfo POJO对象转变为注册中心（zookeeper实现）中的一条路径。
+     * 调用前需保证serviceInfo、serviceInfo.annotationInfo均不为null。
+     * @param serviceInfo
+     * @return
+     */
     public static String buildProviderPath(ServiceInfo serviceInfo) {
         String providerLeafNode = ProviderLeafNode.stringify(
                 ProviderLeafNode.builder()
                         .host(serviceInfo.getHost())
                         .port(serviceInfo.getPort())
-                        .version(serviceInfo.getVersion())
+                        .version(serviceInfo.getAnnotationInfo().getVersion())
                         .build()
         );
         return buildProviderPath(
-                serviceInfo.getGroup(),
-                serviceInfo.getServiceName(),
+                serviceInfo.getAnnotationInfo().getGroup(),
+                serviceInfo.getAnnotationInfo().getServiceName(),
                 providerLeafNode
         );
     }

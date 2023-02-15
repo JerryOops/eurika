@@ -5,23 +5,14 @@ import lombok.Data;
 
 /**
  * 用于承载一个provider server提供的一项服务信息的POJO。
- * 被提交到注册中心中。
+ * 对于zookeeper实现的注册中心而言，该POJO与一条路径唯一对应。
  */
 @Data
 public class ServiceInfo {
     /**
-     * Full name of the service class to be registered, namely the class annotated with @EurikaService.<p>
-     * e.g. com.jerryoops.FooService
+     * Annotation info of the bean which will be invoked when receives an RPC call.
      */
-    private String serviceName;
-    /**
-     * Value specified by 'group' in the annotation of @EurikaService.
-     */
-    private String group;
-    /**
-     * Value specified by 'version' in the annotation of @EurikaService.
-     */
-    private String version;
+    EurikaServiceAnnotationInfo annotationInfo;
     /**
      * Provider's IP address (used to receive rpc call)
      */

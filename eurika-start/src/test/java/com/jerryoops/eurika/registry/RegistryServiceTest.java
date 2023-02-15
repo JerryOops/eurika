@@ -1,6 +1,7 @@
 package com.jerryoops.eurika.registry;
 
 import com.jerryoops.eurika.Application;
+import com.jerryoops.eurika.common.domain.EurikaServiceAnnotationInfo;
 import com.jerryoops.eurika.registry.client.curator.CuratorClient;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.registry.register.RegistryService;
@@ -23,11 +24,12 @@ public class RegistryServiceTest {
     @Test
     public void testRegistryService() {
         ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.setAnnotationInfo(new EurikaServiceAnnotationInfo());
         serviceInfo.setHost("127.0.0.1");
         serviceInfo.setPort(1234);
-        serviceInfo.setServiceName("HelloService");
-        serviceInfo.setGroup("DEFAULT_GROUP");
-        serviceInfo.setVersion("1.0.0");
+        serviceInfo.getAnnotationInfo().setServiceName("HelloService");
+        serviceInfo.getAnnotationInfo().setGroup("DEFAULT_GROUP");
+        serviceInfo.getAnnotationInfo().setVersion("1.0.0");
         registryService.register(serviceInfo);
     }
 

@@ -40,7 +40,7 @@ public class EurikaBeanRegistrar implements ImportBeanDefinitionRegistrar, Resou
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         String[] packagePathsToBeScanned = this.getPackagePaths(importingClassMetadata);
-        scanBeans(packagePathsToBeScanned, registry);
+        this.scanBeans(packagePathsToBeScanned, registry);
     }
 
     /**
