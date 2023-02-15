@@ -13,7 +13,18 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>log4j.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -21,13 +32,10 @@
                 <version>3.3.0</version>
 
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <!-- 指定jar包最终名称为eurika-all -->
-                    <finalName>eurika-all</finalName>
-                    <!-- 要求不添加assemblyId后缀，即去掉jar-with-dependencies后缀 -->
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <finalName>eurika</finalName>
                 </configuration>
 
                 <executions>

@@ -25,7 +25,6 @@
         <lombok.version>1.18.24</lombok.version>
         <curator.framework.version>2.13.0</curator.framework.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
         <hutool.version>5.7.17</hutool.version>
         <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
         <guava.version>31.1-jre</guava.version>
@@ -148,21 +147,11 @@
                 <version>${curator.framework.version}</version>
             </dependency>
 
-            <!-- slf4j and log4j -->
+            <!-- slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
             </dependency>
 
             <!-- hutool -->
