@@ -1,6 +1,6 @@
-package com.jerryoops.eurika.spring.annotation;
+package com.jerryoops.eurika.common.spring.context.annotation;
 
-import com.jerryoops.eurika.spring.context.bean.registrar.EurikaBeanRegistrar;
+import com.jerryoops.eurika.common.spring.context.bean.registrar.EurikaBeanRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;

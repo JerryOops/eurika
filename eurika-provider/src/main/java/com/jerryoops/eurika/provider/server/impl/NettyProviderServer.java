@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 
 @Slf4j
 @Component
@@ -24,17 +27,26 @@ public class NettyProviderServer implements ProviderServer {
     SpecifiedConfig specifiedConfig;
 
     private int port;
+    private String host;
 
-    private void initUsablePort() {
+    private void initHostAndPort() throws UnknownHostException {
         port = ProviderConstant.DEFAULT_PORT;
         if (!NetUtil.isUsableLocalPort(port)) {
             port = NetUtil.getUsableLocalPort(port);
         }
+        host = InetAddress.getLocalHost().getHostAddress();
     }
 
     @Override
     public void start() {
-        this.initUsablePort();
+        // 初始化本地IP地址(host)及可用的本地端口(port)
+        try {
+            this.initHostAndPort();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        // 初始化EurikaServiceBeanHolder
+
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

@@ -1,13 +1,14 @@
-package com.jerryoops.eurika.spring.context.bean.registrar;
+package com.jerryoops.eurika.common.spring.context.bean.registrar;
 
 import com.jerryoops.eurika.common.constant.ContextConstant;
-import com.jerryoops.eurika.spring.annotation.EnableEurika;
-import com.jerryoops.eurika.spring.annotation.EurikaReference;
-import com.jerryoops.eurika.spring.annotation.EurikaService;
-import com.jerryoops.eurika.spring.context.bean.scanner.AnnotatedBeanScanner;
+import com.jerryoops.eurika.common.spring.context.annotation.EnableEurika;
+import com.jerryoops.eurika.common.spring.context.annotation.EurikaReference;
+import com.jerryoops.eurika.common.spring.context.annotation.EurikaService;
+import com.jerryoops.eurika.common.spring.context.bean.scanner.AnnotatedBeanScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.io.ResourceLoader;
@@ -71,18 +72,23 @@ public class EurikaBeanRegistrar implements ImportBeanDefinitionRegistrar, Resou
 
     /**
      * 在packagePaths指定的包路径下进行bean扫描，并注册到beanDefinitionRegistry中。
+     * 需要将com.jerryoops.eurika路径下的所有bean（eurika框架内部的bean）扫描、加入Spring IOC容器。
      * @param packagePaths 待扫描的包路径
      * @param registry IOC容器的bean注册中心
      */
     private void scanBeans(String[] packagePaths, BeanDefinitionRegistry registry) {
+        ClassPathBeanDefinitionScanner eurikaInnerBeanScanner = new ClassPathBeanDefinitionScanner(registry);
         AnnotatedBeanScanner eurikaReferenceAnnotatedBeanScanner = new AnnotatedBeanScanner(registry, EurikaReference.class);
         AnnotatedBeanScanner eurikaServiceAnnotatedBeanScanner = new AnnotatedBeanScanner(registry, EurikaService.class);
         if (null != resourceLoader) {
+            eurikaInnerBeanScanner.setResourceLoader(resourceLoader);
             eurikaReferenceAnnotatedBeanScanner.setResourceLoader(resourceLoader);
             eurikaServiceAnnotatedBeanScanner.setResourceLoader(resourceLoader);
         }
+        int innerBeanAmount = eurikaInnerBeanScanner.scan(ContextConstant.EURIKA_INNER_SUPREME_PACKAGE_PATH);
         int referenceAmount = eurikaReferenceAnnotatedBeanScanner.scan(packagePaths);
         int serviceAmount = eurikaServiceAnnotatedBeanScanner.scan(packagePaths);
-        log.info("ReferenceAmount = {}, ServiceAmount = {}", referenceAmount, serviceAmount);
+        log.info("innerBeanAmount = {}, referenceAmount = {}, serviceAmount = {}",
+                innerBeanAmount, referenceAmount, serviceAmount);
     }
 }
