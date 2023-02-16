@@ -18,25 +18,23 @@ public class ZookeeperUtil {
      * @return
      */
     public static String buildProviderPath(ServiceInfo serviceInfo) {
-        String providerLeafNode = ProviderLeafNode.stringify(
-                ProviderLeafNode.builder()
-                        .host(serviceInfo.getHost())
-                        .port(serviceInfo.getPort())
-                        .version(serviceInfo.getAnnotationInfo().getVersion())
-                        .build()
-        );
+        ProviderLeafNode leafNode = ProviderLeafNode.builder()
+                .host(serviceInfo.getHost())
+                .port(serviceInfo.getPort())
+                .version(serviceInfo.getAnnotationInfo().getVersion())
+                .build();
         return buildProviderPath(
                 serviceInfo.getAnnotationInfo().getGroup(),
                 serviceInfo.getAnnotationInfo().getServiceName(),
-                providerLeafNode
+                ProviderLeafNode.stringify(leafNode)
         );
     }
 
-    private static String buildProviderPath(String group, String serviceName, String providerLeafNode) {
+    private static String buildProviderPath(String group, String serviceName, String providerLeafNodeString) {
         return EURIKA_ROOT_PATH
                 + PATH_SEPARATOR + group
                 + PATH_SEPARATOR + serviceName
                 + PATH_SEPARATOR + PROVIDERS
-                + PATH_SEPARATOR + providerLeafNode;
+                + PATH_SEPARATOR + providerLeafNodeString;
     }
 }
