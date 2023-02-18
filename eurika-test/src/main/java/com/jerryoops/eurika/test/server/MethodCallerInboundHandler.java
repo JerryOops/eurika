@@ -51,8 +51,8 @@ public class MethodCallerInboundHandler extends ChannelInboundHandlerAdapter {
 
     private void invokeMethod(String json) {
         // TODO: 2023/2/4 现在仅用于register方法
-        ServiceInfo serviceInfo = JsonUtil.fromJson(json, ServiceInfo.class);
-        registryService.register(serviceInfo);
+//        ServiceInfo serviceInfo = JsonUtil.fromJson(json, ServiceInfo.class);
+//        registryService.register(serviceInfo);
     }
 
     private FullHttpResponse buildResponse(String s) {

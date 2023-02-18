@@ -12,7 +12,7 @@ public class ServiceInfo {
     /**
      * Annotation info of the bean which will be invoked when receives an RPC call.
      */
-    EurikaServiceAnnotationInfo annotationInfo;
+    ServiceAnnotationInfo annotationInfo;
     /**
      * Provider's IP address (used to receive rpc call)
      */

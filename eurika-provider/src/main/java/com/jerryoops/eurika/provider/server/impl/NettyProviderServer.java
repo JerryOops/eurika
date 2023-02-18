@@ -3,6 +3,10 @@ package com.jerryoops.eurika.provider.server.impl;
 import cn.hutool.core.net.NetUtil;
 import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
+import com.jerryoops.eurika.common.domain.ServiceAnnotationInfo;
+import com.jerryoops.eurika.common.domain.ServiceInfo;
+import com.jerryoops.eurika.common.domain.exception.EurikaException;
+import com.jerryoops.eurika.provider.holder.ServiceHolder;
 import com.jerryoops.eurika.provider.server.ProviderServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -17,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -25,6 +31,8 @@ public class NettyProviderServer implements ProviderServer {
 
     @Autowired
     SpecifiedConfig specifiedConfig;
+    @Autowired
+    ServiceHolder serviceHolder;
 
     private int port;
     private String host;
@@ -45,7 +53,7 @@ public class NettyProviderServer implements ProviderServer {
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        // 初始化EurikaServiceBeanHolder
+        // 将本实例中所有被@EurikaService标注的类注册到注册中心
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -72,4 +80,9 @@ public class NettyProviderServer implements ProviderServer {
             workerGroup.shutdownGracefully();
         }
     }
+
+
+    /**
+     * 调用RegistryService.register方法，将所有被@EurikaService标注的类的服务信息注册到服务注册中心。
+     */
 }

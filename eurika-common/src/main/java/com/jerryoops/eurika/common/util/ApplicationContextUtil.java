@@ -24,4 +24,8 @@ public class ApplicationContextUtil implements ApplicationContextAware {
     public static <T> T getBean(Class<T> clazz) {
         return ctx.getBean(clazz);
     }
+
+    public static <A extends Annotation> A findAnnotationOnBean(String beanName, Class<A> annotationType) {
+        return ctx.findAnnotationOnBean(beanName, annotationType);
+    }
 }

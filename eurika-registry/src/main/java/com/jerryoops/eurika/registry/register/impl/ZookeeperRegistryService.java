@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -63,8 +64,7 @@ public class ZookeeperRegistryService implements RegistryService {
      * @param serviceInfo
      * @return
      */
-    @Override
-    public void register(ServiceInfo serviceInfo) {
+    private void register(ServiceInfo serviceInfo) {
         try {
             // 由registrationRetryer执行创建节点的动作，并在创建成功时添加path到registeredPathSet
             registrationRetryer.call(() -> {
@@ -80,6 +80,17 @@ public class ZookeeperRegistryService implements RegistryService {
         } catch (ExecutionException | RetryException e) {
             // Exception thrown by retryer
             log.warn("Retryer exception: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * 将多个serviceInfo注册到zookeeper。
+     * @param serviceInfoList
+     */
+    @Override
+    public void register(List<ServiceInfo> serviceInfoList) {
+        for (ServiceInfo serviceInfo : serviceInfoList) {
+            this.register(serviceInfo);
         }
     }
 

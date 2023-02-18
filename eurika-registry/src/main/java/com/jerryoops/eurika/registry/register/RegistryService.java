@@ -1,13 +1,16 @@
 package com.jerryoops.eurika.registry.register;
 
+import com.jerryoops.eurika.common.domain.ServiceAnnotationInfo;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
+
+import java.util.List;
 
 public interface RegistryService {
     /**
      * 将serviceInfo注册到注册中心。
-     * @param serviceInfo
+     * @param serviceInfoList
      */
-    void register(ServiceInfo serviceInfo);
+    void register(List<ServiceInfo> serviceInfoList);
 
     /**
      * 将所有已注册到注册中心的服务从注册中心中撤除。
