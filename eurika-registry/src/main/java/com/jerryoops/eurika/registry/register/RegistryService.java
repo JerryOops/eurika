@@ -1,6 +1,5 @@
 package com.jerryoops.eurika.registry.register;
 
-import com.jerryoops.eurika.common.domain.ServiceAnnotationInfo;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 
 import java.util.List;

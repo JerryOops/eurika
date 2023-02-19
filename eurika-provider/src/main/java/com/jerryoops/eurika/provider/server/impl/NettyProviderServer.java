@@ -3,11 +3,11 @@ package com.jerryoops.eurika.provider.server.impl;
 import cn.hutool.core.net.NetUtil;
 import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
-import com.jerryoops.eurika.common.domain.ServiceAnnotationInfo;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
-import com.jerryoops.eurika.common.domain.exception.EurikaException;
+import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import com.jerryoops.eurika.provider.holder.ServiceHolder;
 import com.jerryoops.eurika.provider.server.ProviderServer;
+import com.jerryoops.eurika.registry.register.RegistryService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -24,6 +24,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jerryoops.eurika.common.constant.ProviderConstant.SERVICE_MAP_KEY_SEPARATOR;
+
 
 @Slf4j
 @Component
@@ -33,28 +35,30 @@ public class NettyProviderServer implements ProviderServer {
     SpecifiedConfig specifiedConfig;
     @Autowired
     ServiceHolder serviceHolder;
+    @Autowired
+    RegistryService registryService;
 
     private int port;
     private String host;
 
-    private void initHostAndPort() throws UnknownHostException {
+    private void initHostAndPort() {
         port = ProviderConstant.DEFAULT_PORT;
         if (!NetUtil.isUsableLocalPort(port)) {
             port = NetUtil.getUsableLocalPort(port);
         }
-        host = InetAddress.getLocalHost().getHostAddress();
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void start() {
         // 初始化本地IP地址(host)及可用的本地端口(port)
-        try {
-            this.initHostAndPort();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
+        this.initHostAndPort();
         // 将本实例中所有被@EurikaService标注的类注册到注册中心
-
+        this.doRegister();
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -85,4 +89,23 @@ public class NettyProviderServer implements ProviderServer {
     /**
      * 调用RegistryService.register方法，将所有被@EurikaService标注的类的服务信息注册到服务注册中心。
      */
+    private void doRegister() {
+        List<ServiceInfo> serviceInfoList = this.convertToServiceInfoList(serviceHolder.getServiceMapKeys(), host, port);
+        registryService.register(serviceInfoList);
+    }
+
+    private List<ServiceInfo> convertToServiceInfoList(List<String> serviceMapKeys, String host, int port) {
+        List<ServiceInfo> serviceInfoList = new ArrayList<>(serviceMapKeys.size());
+        for (String key : serviceHolder.getServiceMapKeys()) {
+            String[] splitKey = key.split(String.valueOf(SERVICE_MAP_KEY_SEPARATOR));
+            ServiceInfo serviceInfo = new ServiceInfo();
+            serviceInfo.setServiceName(StringEscapeUtil.unescape(splitKey[0]));
+            serviceInfo.setGroup(StringEscapeUtil.unescape(splitKey[1]));
+            serviceInfo.setVersion(StringEscapeUtil.unescape(splitKey[2]));
+            serviceInfo.setHost(host);
+            serviceInfo.setPort(port);
+            serviceInfoList.add(serviceInfo);
+        }
+        return serviceInfoList;
+    }
 }

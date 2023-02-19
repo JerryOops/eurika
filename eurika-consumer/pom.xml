@@ -66,11 +66,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
-        <!-- apache commons lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

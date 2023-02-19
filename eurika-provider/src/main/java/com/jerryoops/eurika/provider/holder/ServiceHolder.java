@@ -1,8 +1,9 @@
 package com.jerryoops.eurika.provider.holder;
 
-import com.jerryoops.eurika.common.constant.ProviderConstant;
+import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.spring.context.annotation.EurikaService;
 import com.jerryoops.eurika.common.util.ApplicationContextUtil;
+import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class ServiceHolder implements SmartLifecycle {
 
     private boolean runningFlag = false;
 
-    // interfaceName#group#version --> beanObject
+    // name#group#version(service specification) --> beanObject
     private Map<String, Object> serviceMap;
 
     /**
@@ -92,7 +93,9 @@ public class ServiceHolder implements SmartLifecycle {
             String group = annotation.group();
             String version = annotation.version();
             // serviceMap的key值，唯一则合法。若serviceMap中已有相同的key值，说明出现了情况2
-            String key = name + SERVICE_MAP_KEY_SEPARATOR + group + SERVICE_MAP_KEY_SEPARATOR + version;
+            String key = StringEscapeUtil.escapeHashKey(name) + SERVICE_MAP_KEY_SEPARATOR +
+                    StringEscapeUtil.escapeHashKey(group) + SERVICE_MAP_KEY_SEPARATOR +
+                    StringEscapeUtil.escapeHashKey(version);
             if (serviceMap.containsKey(key)) {
                 log.warn("It is prohibited to have more than two service classes that implement the same interface " +
                         "and have exactly the same @EurikaService annotation attributes. " +
@@ -101,5 +104,11 @@ public class ServiceHolder implements SmartLifecycle {
             }
             serviceMap.put(key, beanObject);
         }
+        log.info("serviceMap = {}", serviceMap);
+    }
+
+
+    public List<String> getServiceMapKeys() {
+        return new ArrayList<>(serviceMap.keySet());
     }
 }

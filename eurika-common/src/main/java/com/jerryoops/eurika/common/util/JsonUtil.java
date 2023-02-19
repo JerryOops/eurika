@@ -3,7 +3,6 @@ package com.jerryoops.eurika.common.util;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Component;
 
-@Component
 public class JsonUtil {
     private static final Gson gson = new Gson();
 

@@ -1,17 +1,13 @@
 package com.jerryoops.eurika.registry;
 
 import com.jerryoops.eurika.Application;
-import com.jerryoops.eurika.common.domain.ServiceAnnotationInfo;
 import com.jerryoops.eurika.registry.client.curator.CuratorClient;
-import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.registry.register.RegistryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Collections;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Application.class})

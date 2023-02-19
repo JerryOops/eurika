@@ -9,10 +9,22 @@ import lombok.Data;
  */
 @Data
 public class ServiceInfo {
+
     /**
-     * Annotation info of the bean which will be invoked when receives an RPC call.
+     * Full name of the service class to be registered, namely the class annotated with @EurikaService.<p>
+     * e.g. com.jerryoops.FooService
      */
-    ServiceAnnotationInfo annotationInfo;
+    private String serviceName;
+    /**
+     * Value specified by 'group' in the annotation of @EurikaService.
+     */
+    private String group;
+    /**
+     * Value specified by 'version' in the annotation of @EurikaService.
+     */
+    private String version;
+
+
     /**
      * Provider's IP address (used to receive rpc call)
      */
