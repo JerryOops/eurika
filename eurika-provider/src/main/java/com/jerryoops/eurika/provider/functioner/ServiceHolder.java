@@ -1,6 +1,5 @@
-package com.jerryoops.eurika.provider.holder;
+package com.jerryoops.eurika.provider.functioner;
 
-import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.spring.context.annotation.EurikaService;
 import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;

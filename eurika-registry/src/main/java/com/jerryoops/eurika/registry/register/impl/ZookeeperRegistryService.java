@@ -104,7 +104,7 @@ public class ZookeeperRegistryService implements RegistryService {
             return;
         }
         curatorClient.delete(registeredPathSet);
-        this.registeredPathSet = ConcurrentHashMap.newKeySet();
+        this.registeredPathSet.clear();
     }
 
     /**

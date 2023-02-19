@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eurika-provider</artifactId>
+    <artifactId>eurika-transmission</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -21,14 +21,6 @@
         <dependency>
             <groupId>com.jerryoops</groupId>
             <artifactId>eurika-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-registry</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-transmission</artifactId>
         </dependency>
 
         <!-- Spring -->

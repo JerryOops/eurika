@@ -1,20 +1,25 @@
 package com.jerryoops.eurika.provider.server.impl;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
+import com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum;
+import com.jerryoops.eurika.common.enumeration.TransmissionSideEnum;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;
-import com.jerryoops.eurika.provider.holder.ServiceHolder;
+import com.jerryoops.eurika.provider.functioner.ServiceDeregistar;
+import com.jerryoops.eurika.provider.functioner.ServiceHolder;
 import com.jerryoops.eurika.provider.server.ProviderServer;
 import com.jerryoops.eurika.registry.register.RegistryService;
+import com.jerryoops.eurika.transmission.handler.ChannelHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +40,8 @@ public class NettyProviderServer implements ProviderServer {
     SpecifiedConfig specifiedConfig;
     @Autowired
     ServiceHolder serviceHolder;
+    @Autowired
+    ServiceDeregistar serviceDeregistar;
     @Autowired
     RegistryService registryService;
 
@@ -59,19 +66,24 @@ public class NettyProviderServer implements ProviderServer {
         this.initHostAndPort();
         // 将本实例中所有被@EurikaService标注的类注册到注册中心
         this.doRegister();
+        // 添加shutdown hook
+        serviceDeregistar.addShutdownHook();
+        // 初始化provider server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        DefaultEventExecutorGroup serviceGroup = new DefaultEventExecutorGroup(
+                RuntimeUtil.getProcessorCount());
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .localAddress(port)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            // TODO: add handlers
-                        }
-                    });
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childHandler(ChannelHandlerInitializer.get(
+                            TransmissionProtocolEnum.HTTP, TransmissionSideEnum.PROVIDER
+                    ));
             ChannelFuture bindFuture = b.bind().sync();
             log.info("NettyProviderServer successfully started on port {}", port);
             // 监听等待channel关闭

@@ -15,6 +15,7 @@
         <module>eurika-provider</module>
         <module>eurika-consumer</module>
         <module>eurika-test</module>
+        <module>eurika-transmission</module>
     </modules>
 
     <properties>
@@ -40,6 +41,7 @@
         <eurika.consumer.version>1.0-SNAPSHOT</eurika.consumer.version>
         <eurika.test.version>1.0-SNAPSHOT</eurika.test.version>
         <eurika.start.version>1.0-SNAPSHOT</eurika.start.version>
+        <eurika.transmission.version>1.0-SNAPSHOT</eurika.transmission.version>
     </properties>
 
 
@@ -98,6 +100,18 @@
                 <groupId>com.jerryoops</groupId>
                 <artifactId>eurika-test</artifactId>
                 <version>${eurika.test.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.jerryoops</groupId>
+                        <artifactId>eurika-common</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jerryoops</groupId>
+                <artifactId>eurika-transmission</artifactId>
+                <version>${eurika.transmission.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.jerryoops</groupId>

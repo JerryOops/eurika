@@ -26,6 +26,10 @@
             <groupId>com.jerryoops</groupId>
             <artifactId>eurika-registry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jerryoops</groupId>
+            <artifactId>eurika-transmission</artifactId>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
