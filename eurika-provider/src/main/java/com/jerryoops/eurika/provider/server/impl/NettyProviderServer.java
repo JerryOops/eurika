@@ -5,8 +5,6 @@ import cn.hutool.core.util.RuntimeUtil;
 import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
-import com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum;
-import com.jerryoops.eurika.common.enumeration.TransmissionSideEnum;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import com.jerryoops.eurika.provider.functioner.ServiceDeregistar;
 import com.jerryoops.eurika.provider.functioner.ServiceHolder;
@@ -30,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.jerryoops.eurika.common.constant.ProviderConstant.SERVICE_MAP_KEY_SEPARATOR;
+import static com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum.HTTP;
 
 
 @Slf4j
@@ -81,9 +80,7 @@ public class NettyProviderServer implements ProviderServer {
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .childHandler(ChannelHandlerInitializer.get(
-                            TransmissionProtocolEnum.HTTP, TransmissionSideEnum.PROVIDER
-                    ));
+                    .childHandler(ChannelHandlerInitializer.forProvider(HTTP));
             ChannelFuture bindFuture = b.bind().sync();
             log.info("NettyProviderServer successfully started on port {}", port);
             // 监听等待channel关闭
