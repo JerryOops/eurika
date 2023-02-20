@@ -3,6 +3,7 @@ package com.jerryoops.eurika.registry.client.curator;
 import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ZookeeperConstant;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
+import com.jerryoops.eurika.common.enumeration.ResultCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -15,11 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Set;
-
-import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_INVALID_PARAM;
-import static com.jerryoops.eurika.common.constant.ErrorCode.EXCEPTION_PATH_ALREADY_EXISTS;
 
 
 @NoArgsConstructor
@@ -50,7 +47,7 @@ public class CuratorClient {
             // 建立连接到registryAddress的curatorClient
             String registryAddress = specifiedConfig.getRegistryAddress();
             if (StringUtils.isBlank(registryAddress)) {
-                throw EurikaException.fail(EXCEPTION_INVALID_PARAM, "Host of registry is blank");
+                throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM, "Host of registry is blank");
             }
             client = CuratorFrameworkFactory.builder()
                     .connectString(registryAddress)
@@ -90,7 +87,7 @@ public class CuratorClient {
             client.create().creatingParentsIfNeeded().withMode(createMode).forPath(path);
             return true;
         } catch (KeeperException.NodeExistsException e) {
-            throw EurikaException.fail(EXCEPTION_PATH_ALREADY_EXISTS, "Node already existed for path: " + path);
+            throw EurikaException.fail(ResultCode.EXCEPTION_PATH_ALREADY_EXISTS, "Node already existed for path: " + path);
         }
         catch (Exception e) {
             throw new RuntimeException(e);

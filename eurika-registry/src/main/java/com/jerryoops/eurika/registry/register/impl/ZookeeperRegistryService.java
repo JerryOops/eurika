@@ -6,11 +6,11 @@ import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
-import com.jerryoops.eurika.registry.client.curator.CuratorClient;
-import com.jerryoops.eurika.common.constant.ErrorCode;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
+import com.jerryoops.eurika.common.enumeration.ResultCode;
 import com.jerryoops.eurika.common.util.ZookeeperUtil;
+import com.jerryoops.eurika.registry.client.curator.CuratorClient;
 import com.jerryoops.eurika.registry.register.RegistryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,8 @@ public class ZookeeperRegistryService implements RegistryService {
             .retryIfException(e -> {
                 // 情况1：尝试在zookeeper中创建一个已存在的路径，这种情况则跳过所有重试、快速返回失败
                 if (e instanceof EurikaException &&
-                        ErrorCode.EXCEPTION_PATH_ALREADY_EXISTS.equals( ((EurikaException) e).getCode())) {
+                        ResultCode.EXCEPTION_PATH_ALREADY_EXISTS.getCode()
+                                .equals( ((EurikaException) e).getCode())) {
                     log.warn(((EurikaException) e).getMsg());
                     return false;
                 } else {

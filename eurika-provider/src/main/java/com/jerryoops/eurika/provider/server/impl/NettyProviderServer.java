@@ -7,7 +7,7 @@ import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import com.jerryoops.eurika.provider.functioner.ServiceDeregistar;
-import com.jerryoops.eurika.provider.functioner.ServiceHolder;
+import com.jerryoops.eurika.transmission.functioner.ServiceHolder;
 import com.jerryoops.eurika.provider.server.ProviderServer;
 import com.jerryoops.eurika.registry.register.RegistryService;
 import com.jerryoops.eurika.transmission.handler.ChannelHandlerInitializer;
@@ -71,7 +71,8 @@ public class NettyProviderServer implements ProviderServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         DefaultEventExecutorGroup serviceGroup = new DefaultEventExecutorGroup(
-                RuntimeUtil.getProcessorCount());
+                RuntimeUtil.getProcessorCount()
+        );
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)

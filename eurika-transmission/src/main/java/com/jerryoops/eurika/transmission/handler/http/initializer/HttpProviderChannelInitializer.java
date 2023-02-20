@@ -1,6 +1,7 @@
 package com.jerryoops.eurika.transmission.handler.http.initializer;
 
 import com.jerryoops.eurika.transmission.handler.http.HttpServerMessageResolver;
+import com.jerryoops.eurika.transmission.handler.shared.ProviderMessageHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -11,8 +12,9 @@ public class HttpProviderChannelInitializer<C extends Channel> extends ChannelIn
     protected void initChannel(Channel ch) throws Exception {
         ch.pipeline().addLast(
                 new HttpServerCodec(),
-                new HttpObjectAggregator(512 * 1024),
-                new HttpServerMessageResolver()
+                new HttpObjectAggregator(10 * 1024 * 1024),
+                new HttpServerMessageResolver(),
+                new ProviderMessageHandler()
         );
     }
 }
