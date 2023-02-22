@@ -1,5 +1,6 @@
 package com.jerryoops.eurika.transmission.functioner;
 
+import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
 import com.jerryoops.eurika.common.spring.context.annotation.EurikaService;
@@ -119,11 +120,18 @@ public class ServiceHolder implements SmartLifecycle {
      * @return bean object
      * @throws EurikaException 当serviceMap中不存在与入参key值匹配的对象时，抛出该异常。
      */
-    public Object getServiceObject(String key) throws EurikaException {
+    public Object getServiceBean(String className, String group, String version) throws EurikaException {
+        String key = this.getKey(className, group, version);
         Object bean;
-        if (key == null || (bean = serviceMap.get(key)) == null) {
-            throw EurikaException.fail(ResultCode.EXCEPTION_BEAN_NOT_FOUND, "Bean not found for key: " + key);
+        if ((bean = serviceMap.get(key)) == null) {
+            throw EurikaException.fail(ResultCode.EXCEPTION_INACCESSIBLE_CALL, "Bean not found for key: " + key);
         }
         return bean;
+    }
+
+    private String getKey(String className, String group, String version) {
+        return StringEscapeUtil.unescape(className) + ProviderConstant.SERVICE_MAP_KEY_SEPARATOR +
+                StringEscapeUtil.unescape(group) + ProviderConstant.SERVICE_MAP_KEY_SEPARATOR +
+                StringEscapeUtil.unescape(version);
     }
 }

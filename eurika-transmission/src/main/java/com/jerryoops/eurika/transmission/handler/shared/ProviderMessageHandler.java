@@ -8,10 +8,12 @@ import com.jerryoops.eurika.transmission.domain.RpcResponse;
 import com.jerryoops.eurika.transmission.functioner.ServiceInvoker;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 用于处理RPC request，调用对应的方法并得到结果后，响应RPC response
  */
+@Slf4j
 public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcRequest> {
     ServiceInvoker serviceInvoker;
 
@@ -22,8 +24,8 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
         RpcRequest.checkValidity(request);
-        RpcResponse response = serviceInvoker.invoke(request);
-        ctx.writeAndFlush(response); // TODO: 2023/2/20 retry
+        RpcResponse<?> response = serviceInvoker.invoke(request);
+        ctx.pipeline().write(response); // TODO: 2023/2/20 retry
     }
 
     @Override
@@ -33,11 +35,8 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
             Integer code = e.getCode();
             if (ResultCode.EXCEPTION_INVALID_PARAM.getCode().equals(code)) {
                 String requestId = (String) e.getData();
-                RpcResponse response = RpcResponse.builder()
-                        .requestId(requestId)
-                        .code(ResultCode.EXCEPTION_INVALID_PARAM.getCode())
-                        .msg(e.getMsg()).build();
-                ctx.writeAndFlush(response); // TODO: 2023/2/20 retry
+                RpcResponse<?> response = RpcResponse.build(requestId, ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
+                ctx.pipeline().write(response); // TODO: 2023/2/20 retry
             }
         }
     }

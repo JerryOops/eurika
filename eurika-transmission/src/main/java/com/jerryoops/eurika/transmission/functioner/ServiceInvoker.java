@@ -1,9 +1,7 @@
 package com.jerryoops.eurika.transmission.functioner;
 
-import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
-import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import com.jerryoops.eurika.transmission.domain.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 
 @Slf4j
@@ -27,62 +24,34 @@ public class ServiceInvoker {
      * @param request
      * @return
      */
-    public RpcResponse invoke(RpcRequest request) {
+    public RpcResponse<?> invoke(RpcRequest request) {
         try {
-            String key = this.getKeyForServiceMap(request);
-            Object bean = serviceHolder.getServiceObject(key);
+            Object bean = serviceHolder.getServiceBean(request.getClassName(), request.getGroup(), request.getVersion());
             Method method = bean.getClass().getMethod(request.getMethodName(), request.getParameterTypes());
             Object result = method.invoke(bean, request.getParameters());
-            return this.buildRpcResponse(request, result);
-        } catch (EurikaException e) {
-            // 无法根据给定的className定位到一个bean。invoked by getKeyForServiceMap()
-            if (ResultCode.EXCEPTION_BEAN_NOT_FOUND.getCode().equals(e.getCode())) {
-                String errorMessage = "[RequestId = " + request.getRequestId() + "] No bean has name that matches with [" + request.getClassName() + "]";
-                log.warn(errorMessage, e);
-                return RpcResponse.builder()
-                        .requestId(request.getRequestId())
-                        .code(ResultCode.EXCEPTION_BEAN_NOT_FOUND.getCode())
-                        .msg(errorMessage).build();
-            }
-            log.error("Exception caught: ", e);
+            return RpcResponse.build(request.getRequestId(), ResultCode.OK, "OK", result);
 
-        } catch (NoSuchMethodException | IllegalAccessException e) {
+        } catch (EurikaException | NoSuchMethodException | IllegalAccessException e) {
+            if (e instanceof EurikaException &&
+                    !ResultCode.EXCEPTION_INACCESSIBLE_CALL.getCode().equals(((EurikaException)e).getCode())) {
+                log.warn("Exception caught: ", e);
+            }
+            // 无法根据给定的className定位到一个bean ~ invoked by getKeyForServiceMap() ~ EurikaException
             // 无法根据给定的methodName定位到bean中的方法 / 被调用方法不可访问。invoked by bean.getClass().getMethod() / method.invoke()
-            String errorMessage = "No method matches with the specification of [methodName = " +  request.getMethodName() +
-                    ", parameterTypes = " + Arrays.toString(request.getParameterTypes()) + "] or that it is inaccessible";
+            String errorMessage = "Cannot locate any bean or method that match with given specification, or that they are inaccessible";
             log.warn(errorMessage, e);
-            return RpcResponse.builder()
-                    .requestId(request.getRequestId())
-                    .code(ResultCode.EXCEPTION_METHOD_NOT_FOUND.getCode())
-                    .msg(errorMessage).build();
+            return RpcResponse.build(request.getRequestId(), ResultCode.EXCEPTION_INACCESSIBLE_CALL, errorMessage, null);
 
         } catch (InvocationTargetException e) {
             // 被调用方法内部抛出异常。invoked by method.invoke()
-            log.warn("An exception is thrown by the method invoked: ", e);
-            return RpcResponse.builder()
-                    .requestId(request.getRequestId())
-                    .code(ResultCode.EXCEPTION_SYSTEM_ERROR.getCode())
-                    .msg("An exception is thrown by the underlying method that was invoked").build();
+            String errorMessage = "An exception is thrown by the underlying method that was invoked";
+            log.warn(errorMessage, e);
+            return RpcResponse.build(request.getRequestId(), ResultCode.EXCEPTION_SYSTEM_ERROR, errorMessage, null);
         } catch (Exception e) {
             log.warn("Exception caught: ", e);
-            return RpcResponse.FAIL(request.getRequestId());
         }
-        return null;
+        return RpcResponse.fail(request.getRequestId());
     }
 
-    private RpcResponse buildRpcResponse(RpcRequest request, Object result) {
-        return RpcResponse.builder()
-                .requestId(request.getRequestId())
-                .code(ResultCode.OK.getCode())
-                .msg("OK")
-                .result(result)
-                .resultType(result.getClass())
-                .build();
-    }
 
-    private String getKeyForServiceMap(RpcRequest request) {
-        return StringEscapeUtil.unescape(request.getMethodName()) + ProviderConstant.SERVICE_MAP_KEY_SEPARATOR +
-                StringEscapeUtil.unescape(request.getGroup()) + ProviderConstant.SERVICE_MAP_KEY_SEPARATOR +
-                StringEscapeUtil.unescape(request.getVersion());
-    }
 }
