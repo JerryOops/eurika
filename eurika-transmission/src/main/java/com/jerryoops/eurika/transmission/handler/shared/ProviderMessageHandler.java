@@ -11,7 +11,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 用于处理RPC request，调用对应的方法并得到结果后，响应RPC response
+ * 用于处理RPC request，调用对应的方法并得到结果后，响应RPC response。
  */
 @Slf4j
 public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcRequest> {
@@ -30,6 +30,7 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.warn("Exception caught: ", cause);
         if (cause instanceof EurikaException) {
             EurikaException e = (EurikaException) cause;
             Integer code = e.getCode();

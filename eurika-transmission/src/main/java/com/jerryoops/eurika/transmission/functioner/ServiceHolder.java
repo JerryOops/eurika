@@ -90,7 +90,7 @@ public class ServiceHolder implements SmartLifecycle {
             }
             // interfacesAmount <= 1
             // 如果该类没有实现任何接口，则使用该类的全限定名；否则使用该类的唯一直接实现的接口之全限定名
-            String name = (interfaces.length == 1) ? interfaces[0].getCanonicalName() : beanObject.getClass().getCanonicalName();
+            String name = (interfaces.length == 1) ? interfaces[0].getName() : beanObject.getClass().getName();
             EurikaService annotation = ApplicationContextUtil.findAnnotationOnBean(beanName, EurikaService.class);
             String group = annotation.group();
             String version = annotation.version();
