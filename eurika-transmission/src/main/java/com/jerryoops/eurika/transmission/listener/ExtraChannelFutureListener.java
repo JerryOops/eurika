@@ -22,19 +22,16 @@ public class ExtraChannelFutureListener {
 //     * @return
 //     */
     public static ChannelFutureListener retryListener(Runnable task, int retriedTimes, int maxRetry, int delayMillis) {
-        return new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (!future.isSuccess()) {
-                    if (retriedTimes >= maxRetry) {
-                        log.info("Message sending failed, exceeded maximum retry times({})", maxRetry);
-                    } else {
-                        log.info("Message sending failed, attempting to retry after {} milliseconds...({}/{})", delayMillis, retriedTimes+1, maxRetry);
-                        executor.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
-                    }
+        return future -> {
+            if (!future.isSuccess()) {
+                if (retriedTimes >= maxRetry) {
+                    log.info("Message sending failed, exceeded maximum retry times({})", maxRetry);
                 } else {
-                    log.info("Message sending succeeded({}/{})", retriedTimes, maxRetry);
+                    log.info("Message sending failed, attempting to retry after {} milliseconds...({}/{})", delayMillis, retriedTimes+1, maxRetry);
+                    executor.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
                 }
+            } else {
+                log.info("Message sending succeeded({}/{})", retriedTimes, maxRetry);
             }
         };
     }

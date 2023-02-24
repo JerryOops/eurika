@@ -115,9 +115,11 @@ public class ServiceHolder implements SmartLifecycle {
     }
 
     /**
-     * 根据给定的key值获取bean object。
-     * @param key name#group#version
-     * @return bean object
+     * 根据给定的className,group,version获取key(name#group#version)，进一步在serviceMap中获取对应的bean object。
+     * @param className
+     * @param group
+     * @param version
+     * @return
      * @throws EurikaException 当serviceMap中不存在与入参key值匹配的对象时，抛出该异常。
      */
     public Object getServiceBean(String className, String group, String version) throws EurikaException {

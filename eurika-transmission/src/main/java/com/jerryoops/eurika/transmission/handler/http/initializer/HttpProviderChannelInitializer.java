@@ -12,7 +12,7 @@ public class HttpProviderChannelInitializer<C extends Channel> extends ChannelIn
     protected void initChannel(Channel ch) throws Exception {
         ch.pipeline().addLast(
                 new HttpServerCodec(),
-                new HttpObjectAggregator(10 * 1024 * 1024),
+                new HttpObjectAggregator(20 * 1024 * 1024),
                 new HttpMessageServerResolver(),
                 new ProviderMessageHandler()
         );

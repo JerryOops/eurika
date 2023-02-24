@@ -25,7 +25,7 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
         RpcRequest.checkValidity(request);
         RpcResponse<?> response = serviceInvoker.invoke(request);
-        ctx.pipeline().write(response); // TODO: 2023/2/20 retry
+        ctx.pipeline().write(response);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
             if (ResultCode.EXCEPTION_INVALID_PARAM.getCode().equals(code)) {
                 String requestId = (String) e.getData();
                 RpcResponse<?> response = RpcResponse.build(requestId, ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
-                ctx.pipeline().write(response); // TODO: 2023/2/20 retry
+                ctx.pipeline().write(response);
             }
         }
     }

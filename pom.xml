@@ -34,6 +34,7 @@
         <netty.version>4.1.86.Final</netty.version>
         <gson.version>2.9.0</gson.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <protostuff.version>1.7.4</protostuff.version>
         <!-- internal dependencies versions -->
         <eurika.common.version>1.0-SNAPSHOT</eurika.common.version>
         <eurika.registry.version>1.0-SNAPSHOT</eurika.registry.version>
@@ -214,6 +215,18 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.servlet.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!-- protostuff -->
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-core</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-runtime</artifactId>
+                <version>${protostuff.version}</version>
             </dependency>
 
         </dependencies>
