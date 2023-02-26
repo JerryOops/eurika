@@ -55,11 +55,11 @@ public class HttpRequestDistiller extends ChannelInboundHandlerAdapter {
             Integer code = e.getCode();
             if (ResultCode.EXCEPTION_CLASS_NOT_FOUND.getCode().equals(code)) {
                 // RpcRequest.parseJson(json)中抛出的异常，parameterTypes中某个元素无法从json转为class bean（CLASS NOT FOUND）
-                RpcResponse<Object> response = RpcResponse.build((String) e.getData(), ResultCode.EXCEPTION_CLASS_NOT_FOUND, e.getMsg(), null);
+                RpcResponse<Object> response = RpcResponse.build((Long) e.getData(), ResultCode.EXCEPTION_CLASS_NOT_FOUND, e.getMsg(), null);
                 ctx.pipeline().write(response);
             } else if (ResultCode.EXCEPTION_INVALID_PARAM.getCode().equals(code)) {
                 // RpcRequest.parseJson(json)中抛出的异常，parameterTypes与parameters两者或之一不存在；或者二者的长度不一致
-                RpcResponse<Object> response = RpcResponse.build((String) e.getData(), ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
+                RpcResponse<Object> response = RpcResponse.build((Long) e.getData(), ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
                 ctx.pipeline().write(response);
             }
         }

@@ -17,7 +17,7 @@ public class RpcResponse<T> implements Serializable {
     /**
      * 唯一对应RPC consumer单次调用的UUID值。
      */
-    private String requestId;
+    private Long requestId;
     /**
      * 响应编码。
      */
@@ -33,7 +33,7 @@ public class RpcResponse<T> implements Serializable {
 
 
 
-    public static <R> RpcResponse<R> build(String requestId, ResultCode code, String msg, R result) {
+    public static <R> RpcResponse<R> build(Long requestId, ResultCode code, String msg, R result) {
         RpcResponse<R> rpcResponse = new RpcResponse<>();
         rpcResponse.setRequestId(requestId);
         rpcResponse.setCode(code.getCode());
@@ -47,7 +47,7 @@ public class RpcResponse<T> implements Serializable {
      * @param requestId
      * @return
      */
-    public static RpcResponse<?> fail(String requestId) {
+    public static RpcResponse<?> fail(Long requestId) {
         return RpcResponse.build(requestId, ResultCode.EXCEPTION_SYSTEM_ERROR, "System error", null);
     }
 

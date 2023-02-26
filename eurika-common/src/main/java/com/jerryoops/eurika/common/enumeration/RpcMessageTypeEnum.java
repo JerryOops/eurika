@@ -7,11 +7,11 @@ public enum RpcMessageTypeEnum {
     /**
      * RpcMessage类型：RpcRequest
      */
-    RPC_REQUEST("RpcRequest", 1),
+    RPC_REQUEST("RpcRequest", (byte) 1),
     /**
      * RpcMessage类型：RpcResponse
      */
-    RPC_RESPONSE("RpcResponse", 2)
+    RPC_RESPONSE("RpcResponse", (byte) 2)
     ;
 
     /**
@@ -21,9 +21,9 @@ public enum RpcMessageTypeEnum {
     /**
      * 内部编码
      */
-    private final Integer code;
+    private final Byte code;
 
-    RpcMessageTypeEnum(String name, Integer code) {
+    RpcMessageTypeEnum(String name, Byte code) {
         this.name = name;
         this.code = code;
     }
@@ -34,7 +34,7 @@ public enum RpcMessageTypeEnum {
 
     public static RpcMessageTypeEnum get(Byte code) {
         for (RpcMessageTypeEnum r : RpcMessageTypeEnum.values()) {
-            if (r.code.equals((int) code)) {
+            if (r.code.equals(code)) {
                 return r;
             }
         }

@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum CompressionProtocolEnum {
 
-    GZIP("gzip", 1, GzipCompressor.INSTANCE)
+    GZIP("gzip", (byte) 1, GzipCompressor.INSTANCE)
     ;
 
     /**
@@ -20,11 +20,11 @@ public enum CompressionProtocolEnum {
     /**
      * 内部编码
      */
-    private final Integer code;
+    private final Byte code;
 
     private final Compressor compressor;
 
-    CompressionProtocolEnum(String name, Integer code, Compressor compressor) {
+    CompressionProtocolEnum(String name, Byte code, Compressor compressor) {
         this.name = name;
         this.code = code;
         this.compressor = compressor;
@@ -41,7 +41,7 @@ public enum CompressionProtocolEnum {
 
     public static CompressionProtocolEnum get(Byte code) {
         for (CompressionProtocolEnum c : CompressionProtocolEnum.values()) {
-            if (c.code.equals((int) code)) {
+            if (c.code.equals(code)) {
                 return c;
             }
         }

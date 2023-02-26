@@ -41,7 +41,7 @@ public class RpcMessage implements Serializable {
     /**
      * 唯一对应本次RPC调用的UUID值。
      */
-    private Integer requestId;
+    private Long requestId;
     /**
      * body
      */

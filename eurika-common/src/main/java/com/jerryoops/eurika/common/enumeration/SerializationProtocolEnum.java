@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum SerializationProtocolEnum {
 
-    PROTOSTUFF("protostuff", 1, ProtostuffSerializer.INSTANCE);
+    PROTOSTUFF("protostuff", (byte) 1, ProtostuffSerializer.INSTANCE);
 
     /**
      * 名称
@@ -16,10 +16,10 @@ public enum SerializationProtocolEnum {
     /**
      * 内部编码
      */
-    private final Integer code;
+    private final Byte code;
     private final Serializer serializer;
 
-    SerializationProtocolEnum(String name, Integer code, Serializer serializer) {
+    SerializationProtocolEnum(String name, Byte code, Serializer serializer) {
         this.name = name;
         this.code = code;
         this.serializer = serializer;
@@ -36,7 +36,7 @@ public enum SerializationProtocolEnum {
 
     public static SerializationProtocolEnum get(Byte code) {
         for (SerializationProtocolEnum s : SerializationProtocolEnum.values()) {
-            if (s.code.equals((int) code)) {
+            if (s.code.equals(code)) {
                 return s;
             }
         }

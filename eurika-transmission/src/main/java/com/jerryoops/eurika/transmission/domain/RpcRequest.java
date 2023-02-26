@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Data
@@ -23,7 +22,7 @@ public class RpcRequest implements Serializable {
     /**
      * 唯一对应RPC consumer单次调用的UUID值。
      */
-    private String requestId;
+    private Long requestId;
     /**
      * <p>被调用类的全限定名。如果该类没有实现任何接口，则使用该类的全限定名；否则使用该类的唯一直接实现的接口之全限定名。</p>
      * <p>e.g. "com.jerryoops.foo.bar.HelloService.hello"</p>
@@ -57,7 +56,7 @@ public class RpcRequest implements Serializable {
      * @param request
      */
     public static void checkValidity(RpcRequest request) {
-        if (null == request || StringUtils.isBlank(request.getRequestId()) || StringUtils.isBlank(request.getClassName()) ||
+        if (null == request || null == request.getRequestId() || StringUtils.isBlank(request.getClassName()) ||
                 StringUtils.isBlank(request.getMethodName()) || null == request.getParameterTypes() || null == request.getParameters() ||
                 null == request.getVersion() || null == request.getGroup()) {
             throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM, "RpcRequest with invalid parameter(s): " + request,

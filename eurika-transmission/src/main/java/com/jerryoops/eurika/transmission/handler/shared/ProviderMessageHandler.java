@@ -35,8 +35,7 @@ public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcReque
             EurikaException e = (EurikaException) cause;
             Integer code = e.getCode();
             if (ResultCode.EXCEPTION_INVALID_PARAM.getCode().equals(code)) {
-                String requestId = (String) e.getData();
-                RpcResponse<?> response = RpcResponse.build(requestId, ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
+                RpcResponse<?> response = RpcResponse.build((Long) e.getData(), ResultCode.EXCEPTION_INVALID_PARAM, e.getMsg(), null);
                 ctx.pipeline().write(response);
             }
         }
