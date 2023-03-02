@@ -3,13 +3,13 @@ package com.jerryoops.eurika.transmission.functioner;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
-import com.jerryoops.eurika.common.spring.context.annotation.EurikaService;
+import com.jerryoops.eurika.common.spring.annotation.EurikaService;
 import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +22,7 @@ import static com.jerryoops.eurika.common.constant.ProviderConstant.SERVICE_MAP_
  */
 @Slf4j
 @Component
-public class ServiceHolder implements SmartLifecycle {
-
-    private boolean runningFlag = false;
+public class ServiceHolder {
 
     // name#group#version(service specification) --> beanObject
     private Map<String, Object> serviceMap;
@@ -33,37 +31,10 @@ public class ServiceHolder implements SmartLifecycle {
      * 本类初始化方法。SmartLifecycle保证该方法会在所有的bean都初始化完成之后被调用，用来初始化本类实例。
      * 将会从Spring IOC容器中获取所有被@EurikaService标注的类实例，并持有指向所有该类实例的引用；
      */
-    @Override
-    public void start() {
+    @PostConstruct
+    private void start() {
         Map<String, Object> map = ApplicationContextUtil.getBeanMapWithAnnotation(EurikaService.class);
         this.buildServiceMap(map);
-        setRunningFlag(true);
-    }
-
-    @Override
-    public void stop() {
-        // do nothing,
-        // since implementation of SmartLifecycle will not have this method called
-    }
-
-    @Override
-    public boolean isRunning() {
-        return runningFlag;
-    }
-
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
-
-    @Override
-    public void stop(Runnable callback) {
-        callback.run();
-        setRunningFlag(false);
-    }
-
-    private void setRunningFlag(boolean runningFlag) {
-        this.runningFlag = runningFlag;
     }
 
     /**
@@ -109,10 +80,10 @@ public class ServiceHolder implements SmartLifecycle {
         log.info("serviceMap = {}", serviceMap);
     }
 
-
-    public List<String> getServiceMapKeys() {
-        return new ArrayList<>(serviceMap.keySet());
+    public List<Object> getAllBeans() {
+        return new ArrayList<>(serviceMap.values());
     }
+
 
     /**
      * 根据给定的className,group,version获取key(name#group#version)，进一步在serviceMap中获取对应的bean object。

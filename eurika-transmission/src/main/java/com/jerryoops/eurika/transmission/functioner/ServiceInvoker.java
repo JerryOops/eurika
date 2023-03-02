@@ -12,6 +12,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
+/**
+ * provider端所用对象。接收一个RpcRequest，调用对应方法后，返回一个RpcResponse。
+ */
 @Slf4j
 @Component
 public class ServiceInvoker {

@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RpcDecoder extends LengthFieldBasedFrameDecoder {
 
     public RpcDecoder() {
-        this(TransmissionConstant.RPC_MESSAGE_MAX_LENGTH, 0, 4, 0, 0, true);
+        this(TransmissionConstant.RPC_MESSAGE_MAX_LENGTH, 0, 4, -4, 0, true);
     }
 
     private RpcDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
@@ -86,8 +86,8 @@ public class RpcDecoder extends LengthFieldBasedFrameDecoder {
         } else if (RpcMessageTypeEnum.RPC_RESPONSE.equals(RpcMessageTypeEnum.get(type))) {
             body = serializer.deserialize(bodyBytes, RpcResponse.class);
         }
-        log.info("body = {}", body);
         rpcMessage.setBody(body);
+        log.info("rpcMessage = {}", rpcMessage);
         return rpcMessage;
     }
 

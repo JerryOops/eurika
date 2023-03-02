@@ -1,4 +1,4 @@
-package com.jerryoops.eurika.common.spring.context.annotation;
+package com.jerryoops.eurika.common.spring.annotation;
 
 import com.jerryoops.eurika.common.constant.RegistryConstant;
 

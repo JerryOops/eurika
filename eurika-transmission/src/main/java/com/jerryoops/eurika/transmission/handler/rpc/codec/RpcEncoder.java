@@ -34,14 +34,14 @@ public class RpcEncoder extends MessageToByteEncoder<RpcMessage> {
     private void doEncode(ChannelHandlerContext ctx, RpcMessage message, ByteBuf out) {
         // header
         out.writerIndex(4); // 跳过报头的length字段占用的4字节
-        out.writeByte(TransmissionConstant.RPC_MESSAGE_MAGIC);
-        out.writeByte(TransmissionConstant.RPC_MESSAGE_VERSION);
+        out.writeByte(message.getMagic());
+        out.writeByte(message.getVersion());
         out.writeByte(message.getCompression());
         out.writeByte(message.getSerialization());
         out.writeByte(message.getType());
         // todo 跳过待用区域（作为clientId?）
         out.writerIndex(out.writerIndex() + 7);
-        out.writeLong(message.getRequestId());
+        out.writeLong(message.getRequestId()); // 8 Bytes
 
         // body
         byte[] bodyBytes = this.serializeBody(message);

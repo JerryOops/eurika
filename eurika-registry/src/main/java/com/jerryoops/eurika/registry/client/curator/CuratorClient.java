@@ -1,9 +1,10 @@
 package com.jerryoops.eurika.registry.client.curator;
 
-import com.jerryoops.eurika.common.config.SpecifiedConfig;
 import com.jerryoops.eurika.common.constant.ZookeeperConstant;
+import com.jerryoops.eurika.common.domain.config.RegistryConfig;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
+import com.jerryoops.eurika.common.tool.config.ConfigManager;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +25,6 @@ import java.util.Set;
 @Component
 public class CuratorClient {
     @Autowired
-    private SpecifiedConfig specifiedConfig;
-    @Autowired
     private CuratorConnectionListener curatorConnectionStateListener;
     private CuratorFramework client;
 
@@ -34,18 +33,19 @@ public class CuratorClient {
      */
     @PostConstruct
     private void init() {
+        RegistryConfig registryConfig = ConfigManager.getRegistryConfig();
         // 变量
-        Integer connectionTimeoutMillis = specifiedConfig.getRegistryConnectionTimeoutMilliseconds();
+        Integer connectionTimeoutMillis = registryConfig.getTimeoutConnection();
         if (null == connectionTimeoutMillis || connectionTimeoutMillis < 0) {
             connectionTimeoutMillis = ZookeeperConstant.DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS;
         }
-        Integer sessionTimeoutMillis = specifiedConfig.getRegistrySessionTimeoutMilliseconds();
+        Integer sessionTimeoutMillis = registryConfig.getTimeoutSession();
         if (null == sessionTimeoutMillis || sessionTimeoutMillis < 0) {
             sessionTimeoutMillis = ZookeeperConstant.DEFAULT_SESSION_TIMEOUT_MILLISECONDS;
         }
         try {
             // 建立连接到registryAddress的curatorClient
-            String registryAddress = specifiedConfig.getRegistryAddress();
+            String registryAddress = registryConfig.getAddress();
             if (StringUtils.isBlank(registryAddress)) {
                 throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM, "Host of registry is blank");
             }

@@ -1,4 +1,4 @@
-package com.jerryoops.eurika.common.spring.context.bean.scanner;
+package com.jerryoops.eurika.spring.functioner;
 
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;

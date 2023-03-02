@@ -14,10 +14,10 @@ import lombok.extern.slf4j.Slf4j;
  * 用于处理RPC request，调用对应的方法并得到结果后，响应RPC response。
  */
 @Slf4j
-public class ProviderMessageHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class ProviderInvocationHandler extends SimpleChannelInboundHandler<RpcRequest> {
     ServiceInvoker serviceInvoker;
 
-    public ProviderMessageHandler() {
+    public ProviderInvocationHandler() {
         this.serviceInvoker = ApplicationContextUtil.getBean(ServiceInvoker.class);
     }
 

@@ -1,5 +1,7 @@
 package com.jerryoops.eurika.transmission.handler.rpc;
 
+import com.jerryoops.eurika.common.domain.exception.EurikaException;
+import com.jerryoops.eurika.common.enumeration.ResultCode;
 import com.jerryoops.eurika.transmission.domain.RpcMessage;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,8 +26,8 @@ public class RpcRequestDistiller extends ChannelInboundHandlerAdapter {
                 RpcMessage message = (RpcMessage) msg;
                 Object body = message.getBody();
                 if (!(body instanceof RpcRequest)) {
-                    // TODO: 2023/2/24 throw exception
-                    log.warn("body is not instance of RpcRequest ... body.class = {}", body.getClass());
+                    log.warn("body is not instance of RpcRequest (class = {})", body.getClass());
+                    // stop the message here & do not pass it to next inbound handler
                 }
                 ctx.fireChannelRead(body);
             }

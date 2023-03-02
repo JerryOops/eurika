@@ -2,9 +2,8 @@ package com.jerryoops.eurika.provider.server.impl;
 
 import cn.hutool.core.net.NetUtil;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
-import com.jerryoops.eurika.provider.functioner.ServiceRegistrar;
 import com.jerryoops.eurika.provider.server.ProviderServer;
-import com.jerryoops.eurika.registry.register.RegistryService;
+import com.jerryoops.eurika.transmission.functioner.ServiceHolder;
 import com.jerryoops.eurika.transmission.handler.ChannelHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -24,16 +24,14 @@ import static com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum.H
 
 @Slf4j
 @Component
-public class NettyProviderServer implements ProviderServer {
-    @Autowired
-    ServiceRegistrar serviceRegistrar;
-    @Autowired
-    RegistryService registryService;
+public class NettyProviderServer extends ProviderServer {
 
-    private int port;
-    private String host;
-
-    private void initHostAndPort() {
+    /**
+     * 初始化本地IP地址(host)及可用的本地端口(port)；
+     * 获取ServiceHolder中的所有bean(@EurikaService-annotated)，并注册到服务中心
+     */
+    @PostConstruct
+    private void init() {
         port = ProviderConstant.DEFAULT_PORT;
         if (!NetUtil.isUsableLocalPort(port)) {
             port = NetUtil.getUsableLocalPort(port);
@@ -45,14 +43,11 @@ public class NettyProviderServer implements ProviderServer {
         }
     }
 
+    /**
+     * 启动服务器实例
+     */
     @Override
     public void start() {
-        // 初始化本地IP地址(host)及可用的本地端口(port)
-        this.initHostAndPort();
-        // 将本实例中所有被@EurikaService标注的类注册到注册中心
-        serviceRegistrar.doRegister(host, port);
-        // 添加shutdown hook
-        serviceRegistrar.addShutdownHook();
         // 初始化provider server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
