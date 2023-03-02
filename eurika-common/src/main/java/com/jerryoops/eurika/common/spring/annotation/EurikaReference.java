@@ -1,6 +1,8 @@
 package com.jerryoops.eurika.common.spring.annotation;
 
 import com.jerryoops.eurika.common.constant.RegistryConstant;
+import com.jerryoops.eurika.common.domain.listener.CallbackListener;
+import com.jerryoops.eurika.common.domain.listener.DefaultCallbackListener;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,4 +31,15 @@ public @interface EurikaReference {
      * <p>不显式指定时，默认为"1.0.0"。</p>
      */
     String version() default RegistryConstant.DEFAULT_VERSION;
+
+    /**
+     * 当async==true时，将会在RPC调用发送成功时立即返回。
+     * 当接收到来自provider端的RPC响应时，调用listener中的响应方法。
+     */
+    boolean async() default false;
+
+    /**
+     * 用于RPC调用完成时的回调。
+     */
+    Class<? extends CallbackListener> listener() default DefaultCallbackListener.class;
 }

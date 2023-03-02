@@ -8,6 +8,7 @@ import cn.hutool.setting.Setting;
 import cn.hutool.setting.SettingUtil;
 import com.jerryoops.eurika.common.constant.PropertyConstant;
 import com.jerryoops.eurika.common.domain.config.Config;
+import com.jerryoops.eurika.common.domain.config.ConsumerConfig;
 import com.jerryoops.eurika.common.domain.config.RegistryConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,10 @@ public class ConfigManager {
     // ------------------------------外部方法------------------------------
     public static RegistryConfig getRegistryConfig() {
         return (RegistryConfig) get(RegistryConfig.class);
+    }
+
+    public static ConsumerConfig getConsumerConfig() {
+        return (ConsumerConfig) get(ConsumerConfig.class);
     }
 
 

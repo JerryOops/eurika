@@ -3,7 +3,6 @@ package com.jerryoops.eurika.provider.server.impl;
 import cn.hutool.core.net.NetUtil;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
 import com.jerryoops.eurika.provider.server.ProviderServer;
-import com.jerryoops.eurika.transmission.functioner.ServiceHolder;
 import com.jerryoops.eurika.transmission.handler.ChannelHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,7 +11,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

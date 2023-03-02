@@ -5,12 +5,15 @@ import cn.hutool.core.util.RandomUtil;
 import java.util.concurrent.atomic.AtomicLong;
 
 
+/**
+ * 用于生成ID。
+ */
 public class IdGenerator {
 
     private static final AtomicLong REQUEST_ID = new AtomicLong(RandomUtil.randomLong(Long.MAX_VALUE));
 
     /**
-     * client使用，用于生成某次请求的requestId
+     * RPC调用方使用，用于生成某次RPC请求的requestId。
      */
     public static Long generateRequestId() {
         return REQUEST_ID.getAndIncrement();

@@ -26,7 +26,6 @@ public class RpcRequest implements Serializable {
     /**
      * <p>被调用类的全限定名。如果该类没有实现任何接口，则使用该类的全限定名；否则使用该类的唯一直接实现的接口之全限定名。</p>
      * <p>e.g. "com.jerryoops.foo.bar.HelloService.hello"</p>
-     *
      */
     private String className;
     /**

@@ -28,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>com.jerryoops</groupId>
+            <artifactId>eurika-consumer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jerryoops</groupId>
             <artifactId>eurika-provider</artifactId>
         </dependency>
 
