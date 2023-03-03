@@ -35,7 +35,8 @@ public class EurikaAnnotationPostProcessor implements BeanPostProcessor {
             // 获得实现InvocationHandler接口的类proxy，其中定义了增强方法（对service的方法调用实际上是本代理类实现的）
             ReferencedServiceProxy proxy = new ReferencedServiceProxy(consumerClient, annotationMetadata);
             // 获得原始service类的代理类serviceProxy：与原始类的class类型一样，将对原始类的方法调用转交给proxy(3rd arg)实现
-            Object serviceProxy = Proxy.newProxyInstance(field.getClass().getClassLoader(), new Class[]{field.getClass()}, proxy);
+            Class<?> fieldType = field.getType();
+            Object serviceProxy = Proxy.newProxyInstance(fieldType.getClassLoader(), new Class[]{fieldType}, proxy);
             field.setAccessible(true);
             try {
                 field.set(bean, serviceProxy);

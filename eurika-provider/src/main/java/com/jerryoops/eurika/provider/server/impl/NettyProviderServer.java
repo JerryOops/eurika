@@ -25,8 +25,7 @@ import static com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum.H
 public class NettyProviderServer extends ProviderServer {
 
     /**
-     * 初始化本地IP地址(host)及可用的本地端口(port)；
-     * 获取ServiceHolder中的所有bean(@EurikaService-annotated)，并注册到服务中心
+     * 初始化本地IP地址(host)及可用的本地端口(port)。
      */
     @PostConstruct
     private void init() {
