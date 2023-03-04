@@ -15,7 +15,7 @@ public class ConsumerConfig extends Config {
 
     /**
      * consumer进行同步调用时，最大等待时间。仅对@EurikaReference中async设为false的同步调用生效。
-     * <p>key = {super.prefix} + timeout.invocation </p>
+     * <p>key = {super.prefix} + .timeout.invocation </p>
      * <p>value = an integer with millisecond as the time unit </p>
      * <p>defaultValue = 20,000 </p>
      */

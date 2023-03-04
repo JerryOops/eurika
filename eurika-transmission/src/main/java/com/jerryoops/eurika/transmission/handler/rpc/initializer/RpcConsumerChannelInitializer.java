@@ -4,6 +4,7 @@ import com.jerryoops.eurika.transmission.handler.rpc.RpcRequestInstiller;
 import com.jerryoops.eurika.transmission.handler.rpc.RpcResponseDistiller;
 import com.jerryoops.eurika.transmission.handler.rpc.codec.RpcDecoder;
 import com.jerryoops.eurika.transmission.handler.rpc.codec.RpcEncoder;
+import com.jerryoops.eurika.transmission.handler.shared.ConsumerInvocationHandler;
 import com.jerryoops.eurika.transmission.handler.shared.ProviderInvocationHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -16,7 +17,7 @@ public class RpcConsumerChannelInitializer<C extends Channel> extends ChannelIni
                 new RpcDecoder(),
                 new RpcRequestInstiller(),
                 new RpcResponseDistiller(),
-                new ProviderInvocationHandler()
+                new ConsumerInvocationHandler()
         );
     }
 }

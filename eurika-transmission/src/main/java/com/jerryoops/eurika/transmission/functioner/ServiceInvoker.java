@@ -39,7 +39,7 @@ public class ServiceInvoker {
                     !ResultCode.EXCEPTION_INACCESSIBLE_CALL.getCode().equals(((EurikaException)e).getCode())) {
                 log.warn("Exception caught: ", e);
             }
-            // 无法根据给定的className定位到一个bean ~ invoked by getKeyForServiceMap() ~ EurikaException
+            // 无法根据给定的className定位到一个bean ~ invoked by getServiceBean() ~ EurikaException
             // 无法根据给定的methodName定位到bean中的方法 / 被调用方法不可访问。invoked by bean.getClass().getMethod() / method.invoke()
             String errorMessage = "Cannot locate any bean or method that match with given specification, or that they are inaccessible";
             log.warn(errorMessage, e);

@@ -1,7 +1,10 @@
 package com.jerryoops.eurika.transmission;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.jerryoops.eurika.Application;
 import com.jerryoops.eurika.common.constant.TransmissionConstant;
+import com.jerryoops.eurika.common.domain.ConnectionInfo;
+import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.enumeration.CompressionProtocolEnum;
 import com.jerryoops.eurika.common.enumeration.RpcMessageTypeEnum;
 import com.jerryoops.eurika.common.enumeration.SerializationProtocolEnum;
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -24,6 +28,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Application.class})
 public class RpcProviderChannelTest {
+
+    public static void main(String[] args) {
+        ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.setServiceName("serviceName");
+        serviceInfo.setHost("123.4.5.6");
+        serviceInfo.setPort(123);
+        serviceInfo.setGroup("group");
+        serviceInfo.setVersion("1.2.3");
+
+        ConnectionInfo connectionInfo = BeanUtil.copyProperties(serviceInfo, ConnectionInfo.class);
+        System.out.println(connectionInfo);
+    }
 
     EmbeddedChannel rpcChannel = new EmbeddedChannel(ChannelHandlerInitializer.forProvider(TransmissionProtocolEnum.RPC));
 

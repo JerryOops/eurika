@@ -1,8 +1,8 @@
 package com.jerryoops.eurika.common.spring.annotation;
 
 import com.jerryoops.eurika.common.constant.RegistryConstant;
-import com.jerryoops.eurika.common.domain.listener.CallbackListener;
-import com.jerryoops.eurika.common.domain.listener.DefaultCallbackListener;
+import com.jerryoops.eurika.common.domain.listener.callback.CallbackListener;
+import com.jerryoops.eurika.common.domain.listener.callback.DefaultCallbackListener;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

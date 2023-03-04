@@ -25,7 +25,7 @@ public enum ResultCode {
      */
     EXCEPTION_PATH_ALREADY_EXISTS(2002),
     /**
-     * 给定的key值在ServiceMap中无法定位到一个bean, 或者给定的methodName和parameterType在bean中无法定位到一个方法，或者被调用方法不可达
+     * 给定的key值在ServiceBeanMap中无法定位到一个bean, 或者给定的methodName和parameterType在bean中无法定位到一个方法，或者被调用方法不可达
      */
     EXCEPTION_INACCESSIBLE_CALL(2003),
     /**

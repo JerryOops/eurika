@@ -69,7 +69,7 @@ public class ZookeeperRegistryService implements RegistryService {
         try {
             // 由registrationRetryer执行创建节点的动作，并在创建成功时添加path到registeredPathSet
             registrationRetryer.call(() -> {
-                String path = ZookeeperUtil.buildProviderPath(serviceInfo);
+                String path = ZookeeperUtil.buildFullDepthPath(serviceInfo);
                 boolean nodeCreated = curatorClient.createEphemeral(path);
                 if (nodeCreated) {
                     registeredPathSet.add(path);

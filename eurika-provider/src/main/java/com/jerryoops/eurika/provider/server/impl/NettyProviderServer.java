@@ -2,6 +2,8 @@ package com.jerryoops.eurika.provider.server.impl;
 
 import cn.hutool.core.net.NetUtil;
 import com.jerryoops.eurika.common.constant.ProviderConstant;
+import com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum;
+import com.jerryoops.eurika.common.tool.config.ConfigManager;
 import com.jerryoops.eurika.provider.server.ProviderServer;
 import com.jerryoops.eurika.transmission.handler.ChannelHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -51,6 +53,7 @@ public class NettyProviderServer extends ProviderServer {
 //        DefaultEventExecutorGroup serviceGroup = new DefaultEventExecutorGroup(
 //                RuntimeUtil.getProcessorCount()
 //        );
+        String protocolName = ConfigManager.getProviderConfig().getProtocol();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -59,7 +62,8 @@ public class NettyProviderServer extends ProviderServer {
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .childHandler(ChannelHandlerInitializer.forProvider(HTTP));
+                    .childHandler(ChannelHandlerInitializer.forProvider(
+                            TransmissionProtocolEnum.getByName(protocolName)));
             ChannelFuture bindFuture = b.bind().sync();
             log.info("NettyProviderServer successfully started on port {}", port);
             // 监听等待channel关闭

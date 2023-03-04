@@ -20,4 +20,14 @@ public enum TransmissionProtocolEnum {
     TransmissionProtocolEnum(String name) {
         this.name = name;
     }
+
+
+    public static TransmissionProtocolEnum getByName(String name) {
+        for (TransmissionProtocolEnum t : TransmissionProtocolEnum.values()) {
+            if (t.name.equals(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
 }

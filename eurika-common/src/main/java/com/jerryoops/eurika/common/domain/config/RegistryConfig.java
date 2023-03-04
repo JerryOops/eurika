@@ -23,7 +23,7 @@ public class RegistryConfig extends Config {
 
     /**
      * 连接注册中心时的connection超时时间
-     * <p>key = {super.prefix} + timeout.connection </p>
+     * <p>key = {super.prefix} + .timeout.connection </p>
      * <p>value = an integer with millisecond as the time unit </p>
      * <p>defaultValue = 15,000 </p>
      */
@@ -31,7 +31,7 @@ public class RegistryConfig extends Config {
 
     /**
      * 连接注册中心时的session超时时间
-     * <p>key = {super.prefix} + timeout.session </p>
+     * <p>key = {super.prefix} + .timeout.session </p>
      * <p>value = an integer with millisecond as the time unit </p>
      * <p>defaultValue = 60,000 </p>
      */

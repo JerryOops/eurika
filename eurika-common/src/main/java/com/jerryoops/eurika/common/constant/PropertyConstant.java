@@ -13,4 +13,8 @@ public class PropertyConstant {
      * 调用方相关配置的prefix
      */
     public static final String CONSUMER_CONFIG_PREFIX = "eurika.consumer";
+    /**
+     * 被调用方相关配置的prefix
+     */
+    public static final String PROVIDER_CONFIG_PREFIX = "eurika.provider";
 }

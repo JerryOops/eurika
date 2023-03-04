@@ -8,7 +8,7 @@ public class ProviderConstant {
     public static final Integer DEFAULT_PORT = 9091;
 
     /**
-     * separator of the key of ServiceHolder's serviceMap
+     * separator of the key of ServiceHolder's serviceBeanMap
      */
-    public static final Character SERVICE_MAP_KEY_SEPARATOR = '#';
+    public static final Character SERVICE_BEAN_MAP_KEY_SEPARATOR = '#';
 }

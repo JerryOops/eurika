@@ -1,4 +1,4 @@
-package com.jerryoops.eurika.common.domain.listener;
+package com.jerryoops.eurika.common.domain.listener.callback;
 
 /**
  * 开放给用户使用的CallbackListener接口。

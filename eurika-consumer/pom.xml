@@ -70,6 +70,16 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <!-- curator -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+        <!-- curator recipes -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

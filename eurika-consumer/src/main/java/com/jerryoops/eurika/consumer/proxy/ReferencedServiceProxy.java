@@ -4,7 +4,7 @@ import com.jerryoops.eurika.common.spring.annotation.EurikaReference;
 import com.jerryoops.eurika.common.tool.config.ConfigManager;
 import com.jerryoops.eurika.common.tool.id.IdGenerator;
 import com.jerryoops.eurika.consumer.client.ConsumerClient;
-import com.jerryoops.eurika.common.domain.listener.CallbackListener;
+import com.jerryoops.eurika.common.domain.listener.callback.CallbackListener;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import com.jerryoops.eurika.transmission.domain.RpcResponse;
 import lombok.extern.slf4j.Slf4j;

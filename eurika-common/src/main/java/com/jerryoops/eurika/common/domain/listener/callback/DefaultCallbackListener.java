@@ -1,4 +1,4 @@
-package com.jerryoops.eurika.common.domain.listener;
+package com.jerryoops.eurika.common.domain.listener.callback;
 
 import lombok.extern.slf4j.Slf4j;
 
