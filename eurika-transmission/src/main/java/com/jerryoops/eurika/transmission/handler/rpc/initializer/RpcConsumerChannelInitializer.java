@@ -1,5 +1,6 @@
 package com.jerryoops.eurika.transmission.handler.rpc.initializer;
 
+import com.jerryoops.eurika.transmission.handler.rpc.RpcMessageClientResolver;
 import com.jerryoops.eurika.transmission.handler.rpc.RpcRequestInstiller;
 import com.jerryoops.eurika.transmission.handler.rpc.RpcResponseDistiller;
 import com.jerryoops.eurika.transmission.handler.rpc.codec.RpcDecoder;
@@ -15,8 +16,7 @@ public class RpcConsumerChannelInitializer<C extends Channel> extends ChannelIni
         ch.pipeline().addLast(
                 new RpcEncoder(),
                 new RpcDecoder(),
-                new RpcRequestInstiller(),
-                new RpcResponseDistiller(),
+                new RpcMessageClientResolver(),
                 new ConsumerInvocationHandler()
         );
     }

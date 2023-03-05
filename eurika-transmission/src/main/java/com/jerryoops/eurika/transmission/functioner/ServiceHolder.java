@@ -52,8 +52,7 @@ public class ServiceHolder {
             Object beanObject = entry.getValue();
             // 情况1
             Class<?>[] interfaces = beanObject.getClass().getInterfaces();
-            int interfacesAmount = interfaces.length;
-            if (interfacesAmount > 1) {
+            if (interfaces.length > 1) {
                 log.warn("It is prohibited to have a service class annotated with @EurikaService that implements multiple interfaces. " +
                         "This service WILL NOT be registered and therefore WILL NOT be able to be called remotely: {}", beanName);
                 continue;

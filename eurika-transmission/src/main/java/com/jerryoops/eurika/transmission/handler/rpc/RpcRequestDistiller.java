@@ -17,7 +17,7 @@ public class RpcRequestDistiller extends ChannelInboundHandlerAdapter {
 
     /**
      * msg: RpcMessage
-     * out: RpcRequest, distilled from field(body) of msg
+     * out: RpcRequest, distilled from field body of msg
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -25,11 +25,12 @@ public class RpcRequestDistiller extends ChannelInboundHandlerAdapter {
             if (msg instanceof RpcMessage) {
                 RpcMessage message = (RpcMessage) msg;
                 Object body = message.getBody();
-                if (!(body instanceof RpcRequest)) {
-                    log.warn("body is not instance of RpcRequest (class = {})", body.getClass());
+                if (body instanceof RpcRequest) {
+                    ctx.fireChannelRead(body);
+                } else {
+                    log.warn("body is not an instance of RpcRequest (class = {})", body.getClass());
                     // stop the message here & do not pass it to next inbound handler
                 }
-                ctx.fireChannelRead(body);
             }
         } finally {
             ReferenceCountUtil.release(msg);

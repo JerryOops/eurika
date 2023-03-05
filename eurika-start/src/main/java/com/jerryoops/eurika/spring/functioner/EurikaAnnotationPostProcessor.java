@@ -4,6 +4,7 @@ import com.jerryoops.eurika.common.spring.annotation.EurikaReference;
 import com.jerryoops.eurika.consumer.client.ConsumerClient;
 import com.jerryoops.eurika.consumer.functioner.ConnectionManager;
 import com.jerryoops.eurika.consumer.proxy.ReferencedServiceProxy;
+import com.jerryoops.eurika.transmission.functioner.UnrespondedFutureHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class EurikaAnnotationPostProcessor implements BeanPostProcessor {
     @Autowired
     private ConnectionManager connectionManager;
 
+    @Autowired
+    private UnrespondedFutureHolder unrespondedFutureHolder;
+
     /**
      * afterInitialization:
      * <p>用于处理所有被@EurikaReference标注的域：构建其动态代理对象proxy，并使用proxy替代该域。</p>
@@ -40,7 +44,7 @@ public class EurikaAnnotationPostProcessor implements BeanPostProcessor {
             Class<?> fieldType = field.getType();
             connectionManager.addConnection(fieldType.getName(), annotationMetadata.group(), annotationMetadata.version());
             // 获得实现InvocationHandler接口的类proxy，其中定义了增强方法（对service的方法调用实际上是本代理类实现的）
-            ReferencedServiceProxy proxy = new ReferencedServiceProxy(consumerClient, annotationMetadata);
+            ReferencedServiceProxy proxy = new ReferencedServiceProxy(consumerClient, unrespondedFutureHolder, annotationMetadata);
             // 获得原始service类的代理类serviceProxy：与原始类的class类型一样，将对原始类的方法调用转交给proxy(3rd arg)实现
             Object serviceProxy = Proxy.newProxyInstance(fieldType.getClassLoader(), new Class[]{fieldType}, proxy);
             field.setAccessible(true);

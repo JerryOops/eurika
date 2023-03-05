@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ProviderInvocationHandler extends SimpleChannelInboundHandler<RpcRequest> {
-    ServiceInvoker serviceInvoker;
+    private final ServiceInvoker serviceInvoker;
 
     public ProviderInvocationHandler() {
         this.serviceInvoker = ApplicationContextUtil.getBean(ServiceInvoker.class);

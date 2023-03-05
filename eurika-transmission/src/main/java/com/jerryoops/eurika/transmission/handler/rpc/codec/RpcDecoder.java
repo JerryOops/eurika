@@ -63,7 +63,6 @@ public class RpcDecoder extends LengthFieldBasedFrameDecoder {
         byte type = frameBuf.readByte();
         frameBuf.readerIndex(frameBuf.readerIndex() + 7); // todo 跳过7个空的待扩展字节，用来存放clientId?
         long requestId = frameBuf.readLong();
-        log.info("length = {}, magic = {}, version = {}, compression = {}, serialization = {}, type = {}", length, magic, version, compression, serialization, type);
         this.checkValidity(length, magic, version, compression, serialization, type);
 
         // build RpcMessage POJO instance

@@ -2,11 +2,13 @@ package com.jerryoops.eurika.common.domain.config;
 
 import com.jerryoops.eurika.common.constant.PropertyConstant;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 用来存放eurika.properties中，与注册中心(registry)相关的配置信息。
  */
 @Getter
+@ToString
 public class RegistryConfig extends Config {
 
     {

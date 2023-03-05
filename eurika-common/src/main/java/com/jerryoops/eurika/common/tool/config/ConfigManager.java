@@ -58,7 +58,9 @@ public class ConfigManager {
      * @param <T>
      */
     private static <T extends Config> Config get(Class<T> configClazz) {
-        return configCacheMap.computeIfAbsent(configClazz, value -> load(configClazz));
+        Config config = configCacheMap.computeIfAbsent(configClazz, value -> load(configClazz));
+        log.info("config successfully loaded: {}", config);
+        return config;
     }
 
     /**

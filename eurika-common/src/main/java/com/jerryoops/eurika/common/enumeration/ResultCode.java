@@ -32,6 +32,10 @@ public enum ResultCode {
      * 给定的class json无法转为某个Class类对象
      */
     EXCEPTION_CLASS_NOT_FOUND(2004),
+    /**
+     * channel不可用
+     */
+    EXCEPTION_CHANNEL_UNAVAILABLE(2005)
     ;
 
     // fields

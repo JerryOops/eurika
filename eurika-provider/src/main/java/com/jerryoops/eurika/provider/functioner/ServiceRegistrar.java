@@ -50,7 +50,9 @@ public class ServiceRegistrar {
         for (Object bean : beans) {
             EurikaService annotationMetadata = bean.getClass().getAnnotation(EurikaService.class);
             ServiceInfo serviceInfo = new ServiceInfo();
-            serviceInfo.setServiceName(bean.getClass().getName());
+                Class<?>[] interfaces = bean.getClass().getInterfaces();
+                String serviceName = (interfaces.length == 1) ? interfaces[0].getName() : bean.getClass().getName();
+            serviceInfo.setServiceName(serviceName);
             serviceInfo.setGroup(annotationMetadata.group());
             serviceInfo.setVersion(annotationMetadata.version());
             serviceInfo.setHost(host);

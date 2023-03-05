@@ -2,11 +2,13 @@ package com.jerryoops.eurika.common.domain.config;
 
 import com.jerryoops.eurika.common.constant.PropertyConstant;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 用来存放eurika.properties中，与调用方(consumer)相关的配置信息。
  */
 @Getter
+@ToString
 public class ConsumerConfig extends Config {
 
     {

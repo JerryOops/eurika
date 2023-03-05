@@ -64,11 +64,6 @@
         </dependency>
         <dependency>
             <groupId>com.jerryoops</groupId>
-            <artifactId>eurika-test</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jerryoops</groupId>
             <artifactId>eurika-provider</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

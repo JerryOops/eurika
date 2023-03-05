@@ -1,12 +1,15 @@
 package com.jerryoops.eurika.consumer.proxy;
 
+import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.spring.annotation.EurikaReference;
 import com.jerryoops.eurika.common.tool.config.ConfigManager;
 import com.jerryoops.eurika.common.tool.id.IdGenerator;
+import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.consumer.client.ConsumerClient;
 import com.jerryoops.eurika.common.domain.listener.callback.CallbackListener;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import com.jerryoops.eurika.transmission.domain.RpcResponse;
+import com.jerryoops.eurika.transmission.functioner.UnrespondedFutureHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
@@ -14,6 +17,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -26,14 +30,18 @@ public class ReferencedServiceProxy implements InvocationHandler {
 
     // RPC调用中，消费者一端的、负责发送和接收RPC信息的client实例
     private final ConsumerClient consumerClient;
+    // 未响应的CompletableFuture实例的持有者
+    private final UnrespondedFutureHolder unrespondedFutureHolder;
     // 与被代理类(被@EurikaReference修饰的类实例)绑定的EurikaReference信息
     private final EurikaReference annotationMetadata;
 
 
+
     // constructor
-    public ReferencedServiceProxy(ConsumerClient consumerClient, EurikaReference annotationMetadata) {
+    public ReferencedServiceProxy(ConsumerClient consumerClient, UnrespondedFutureHolder unrespondedFutureHolder, EurikaReference annotationMetadata) {
         this.consumerClient = consumerClient;
         this.annotationMetadata = annotationMetadata;
+        this.unrespondedFutureHolder = unrespondedFutureHolder;
     }
 
     /**
@@ -52,14 +60,21 @@ public class ReferencedServiceProxy implements InvocationHandler {
                 // TODO: 2023/3/2 check response's validity and if any exception occurred on provider-side
                 return response.getResult();
 
-            } catch (TimeoutException e) {
-                log.error("Synchronous RPC invocation exceeded maximum waiting time of {}!", timeoutInvocation, e);
             } catch (Exception e) {
-                log.error("Exception caught: ", e);
+                if (e instanceof TimeoutException) {
+                    log.error("Synchronous RPC invocation exceeded maximum waiting time of {}!", timeoutInvocation, e);
+                } else if (e instanceof ExecutionException) {
+                    String wrappedMessage = (e.getCause() instanceof EurikaException) ? ((EurikaException)e.getCause()).getMsg() : e.getCause().getMessage();
+                    log.error("Future completed exceptionally, wrapped message is [{}]", wrappedMessage, e);
+                } else {
+                    log.error("Exception caught: ", e);
+                }
+                // 再次尝试从unrespondedFutureHolder中移除该future。如果已移除，则不做任何事情。
+                unrespondedFutureHolder.completeExceptionally(request.getRequestId(), e);
             }
-            future.cancel(true);
             return null;
         }
+
         // async call
         CallbackListener listener = this.buildCallbackListener();
         if (null == listener) {

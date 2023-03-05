@@ -19,7 +19,7 @@ public class RpcResponseInstiller extends ChannelOutboundHandlerAdapter {
 
     /**
      * msg: RpcResponse
-     * out: RpcMessage, whose filed(body) is instilled with msg
+     * out: RpcMessage, whose field body is instilled with msg
      */
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {

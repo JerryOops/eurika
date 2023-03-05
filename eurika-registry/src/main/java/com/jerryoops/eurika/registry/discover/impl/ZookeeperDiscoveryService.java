@@ -1,5 +1,6 @@
 package com.jerryoops.eurika.registry.discover.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.jerryoops.eurika.common.domain.ConnectionInfo;
 import com.jerryoops.eurika.common.domain.ProviderLeafNode;
 import com.jerryoops.eurika.common.domain.listener.bridge.NodeChangedBridgeListener;
@@ -42,7 +43,7 @@ public class ZookeeperDiscoveryService implements DiscoveryService {
                 .filter(Objects::nonNull)
                 .map(ProviderLeafNode::parse)
                 .filter(x -> Objects.equals(version, x.getVersion()))
-                .map(this::convertToConnectionInfo)
+                .map(x -> BeanUtil.copyProperties(x, ConnectionInfo.class))
                 .collect(Collectors.toList());
     }
 
@@ -60,17 +61,4 @@ public class ZookeeperDiscoveryService implements DiscoveryService {
         curatorClient.watchChildren(path, listener);
     }
 
-
-
-    /**
-     * 用于将ProviderLeafNode形式的POJO转化为ConnectionInfo的POJO。
-     * @param leafNode
-     * @return
-     */
-    private ConnectionInfo convertToConnectionInfo(ProviderLeafNode leafNode) {
-        ConnectionInfo connectionInfo = new ConnectionInfo();
-        connectionInfo.setHost(leafNode.getHost());
-        connectionInfo.setPort(leafNode.getPort());
-        return connectionInfo;
-    }
 }

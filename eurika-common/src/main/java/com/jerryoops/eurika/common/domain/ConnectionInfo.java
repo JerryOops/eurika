@@ -2,11 +2,18 @@ package com.jerryoops.eurika.common.domain;
 
 import io.netty.channel.Channel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Objects;
 
 /**
  * 用于承载连接信息。
  */
-@Data
+@Setter
+@Getter
+@ToString
 public class ConnectionInfo {
     /**
      * Provider's IP address (used to receive rpc call)
@@ -20,4 +27,16 @@ public class ConnectionInfo {
      * the channel(netty) connected to host:port
      */
     private Channel channel;
+
+    @Override
+    public int hashCode() {
+        return host.hashCode() + port.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (ConnectionInfo.class.equals(obj.getClass())) &&
+                Objects.equals(this.host, ((ConnectionInfo) obj).getHost()) &&
+                Objects.equals(this.port, ((ConnectionInfo) obj).getPort());
+    }
 }

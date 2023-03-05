@@ -1,6 +1,7 @@
 package com.jerryoops.eurika;
 
 import com.jerryoops.eurika.configuration.ApplicationConfiguration;
+import com.jerryoops.eurika.consumer.client.impl.NettyConsumerClient;
 import com.jerryoops.eurika.provider.server.impl.NettyProviderServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Import(ApplicationConfiguration.class)
 @ComponentScan
 public class Application {
     public static void main(String[] args) {
@@ -19,11 +19,9 @@ public class Application {
             NettyProviderServer nettyProviderServer = ctx.getBean(NettyProviderServer.class);
             nettyProviderServer.start();
         });
-//        threadPool.submit(() -> {
-//            // TODO: 2023/2/4 设置一个config，如果为true则启动本地调试接口
-//            // 启动test server
-//            TestServer testServer = ctx.getBean(TestServer.class);
-//            testServer.start();
-//        });
+        threadPool.submit(() -> {
+            NettyConsumerClient nettyConsumerClient = ctx.getBean(NettyConsumerClient.class);
+            nettyConsumerClient.start();
+        });
     }
 }

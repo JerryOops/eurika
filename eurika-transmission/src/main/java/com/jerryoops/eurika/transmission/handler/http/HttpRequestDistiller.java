@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.charset.StandardCharsets;
 
 /**
- * <p>入站handler。用于将来源于consumer的http request message中的RPC request提取出来。</p>
+ * <p>provider's inbound handler。用于将来源于consumer的http request message中的RPC request提取出来。</p>
  */
 @Slf4j
 public class HttpRequestDistiller extends ChannelInboundHandlerAdapter {
