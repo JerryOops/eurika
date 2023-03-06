@@ -31,7 +31,7 @@ public enum SerializationProtocolEnum {
 
     public static Serializer getSerializer(Byte code) {
         SerializationProtocolEnum s = get(code);
-        return s == null ? null : s.serializer;
+        return s == null ? PROTOSTUFF.serializer : s.serializer;
     }
 
     public static SerializationProtocolEnum get(Byte code) {

@@ -93,6 +93,7 @@ public class ZookeeperRegistryService implements RegistryService {
         for (ServiceInfo serviceInfo : serviceInfoList) {
             this.register(serviceInfo);
         }
+        log.info("Registered paths: {}", this.registeredPathSet);
     }
 
     /**

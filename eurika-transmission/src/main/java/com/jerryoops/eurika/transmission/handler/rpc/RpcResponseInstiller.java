@@ -30,7 +30,7 @@ public class RpcResponseInstiller extends ChannelOutboundHandlerAdapter {
                 RpcMessage message = RpcMessage.builder()
                         .magic(TransmissionConstant.RPC_MESSAGE_MAGIC)
                         .version(TransmissionConstant.RPC_MESSAGE_VERSION)
-                        .compression(CompressionProtocolEnum.GZIP.getCode()) // TODO: 2023/2/26 使用配置文件来决定
+                        .compression(CompressionProtocolEnum.GZIP.getCode())
                         .serialization(SerializationProtocolEnum.PROTOSTUFF.getCode())
                         .type(RpcMessageTypeEnum.RPC_RESPONSE.getCode())
                         .requestId(response.getRequestId())

@@ -29,7 +29,7 @@ public class RpcRequestInstiller extends ChannelOutboundHandlerAdapter {
                 RpcMessage message = RpcMessage.builder()
                         .magic(TransmissionConstant.RPC_MESSAGE_MAGIC)
                         .version(TransmissionConstant.RPC_MESSAGE_VERSION)
-                        .compression(CompressionProtocolEnum.GZIP.getCode()) // TODO: 2023/3/4 使用配置文件决定
+                        .compression(CompressionProtocolEnum.GZIP.getCode())
                         .serialization(SerializationProtocolEnum.PROTOSTUFF.getCode())
                         .type(RpcMessageTypeEnum.RPC_REQUEST.getCode())
                         .requestId(request.getRequestId())

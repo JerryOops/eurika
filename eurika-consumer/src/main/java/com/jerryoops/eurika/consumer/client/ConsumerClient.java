@@ -7,8 +7,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class ConsumerClient {
 
-    public abstract void start();
-
     /**
      * 开放给外部的方法，进行RPC调用远程方法。
      * @param request RpcRequest实例

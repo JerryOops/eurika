@@ -167,7 +167,6 @@ public class ConnectionManager {
                     "[serviceName = {}, group = {}, version = {}]", serviceName, group, version);
             return null;
         }
-        // TODO: 2023/3/4 添加feature: 在获取一个channel失败后，尝试从connectionInfos中获取另一个channel.
         ConnectionInfo connectionInfo;
         ConsumerConfig config = ConfigManager.getConsumerConfig();
         if (LoadBalanceEnum.CONSISTENT_HASH.getName().equals(config.getLoadbalance())) {

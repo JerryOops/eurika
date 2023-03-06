@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import static com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum.HTTP;
+import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -27,10 +26,15 @@ import static com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum.H
 public class NettyProviderServer extends ProviderServer {
 
     /**
-     * 初始化本地IP地址(host)及可用的本地端口(port)。
+     * 初始化本地IP地址(host)及可用的本地端口(port)，然后启动RPC服务器实例。
      */
     @PostConstruct
-    private void init() {
+    private void start() {
+        this.initHostPort();
+        Executors.newSingleThreadExecutor().submit(this::startServer);
+    }
+
+    private void initHostPort() {
         port = ProviderConstant.DEFAULT_PORT;
         if (!NetUtil.isUsableLocalPort(port)) {
             port = NetUtil.getUsableLocalPort(port);
@@ -42,17 +46,10 @@ public class NettyProviderServer extends ProviderServer {
         }
     }
 
-    /**
-     * 启动服务器实例
-     */
-    @Override
-    public void start() {
-        // 初始化provider server
+    private void startServer() {
+        // 启动provider server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-//        DefaultEventExecutorGroup serviceGroup = new DefaultEventExecutorGroup(
-//                RuntimeUtil.getProcessorCount()
-//        );
         String protocolName = ConfigManager.getProviderConfig().getProtocol();
         try {
             ServerBootstrap b = new ServerBootstrap();

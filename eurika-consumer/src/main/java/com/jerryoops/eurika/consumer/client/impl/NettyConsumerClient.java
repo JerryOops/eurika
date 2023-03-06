@@ -36,20 +36,11 @@ public class NettyConsumerClient extends ConsumerClient {
 
     {
         bootstrap = new Bootstrap();
-    }
-
-    /**
-     * 启动客户端实例
-     */
-    @Override
-    public void start() {
-        NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
-        bootstrap.group(eventLoopGroup)
+        bootstrap.group(new NioEventLoopGroup())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // TODO: 2023/3/3 修改为配置设定
                 .handler(ChannelHandlerInitializer.forConsumer(TransmissionProtocolEnum.HTTP));
     }
-
 
     /**
      * 开放给外部的方法，进行RPC调用远程方法：向channel的outbound方向写RpcRequest。

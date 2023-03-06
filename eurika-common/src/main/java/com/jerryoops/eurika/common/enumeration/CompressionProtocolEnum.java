@@ -32,7 +32,7 @@ public enum CompressionProtocolEnum {
 
     public static Compressor getCompressor(Byte code) {
         CompressionProtocolEnum c = get(code);
-        return c == null ? null : c.compressor;
+        return c == null ? GZIP.compressor : c.compressor;
     }
 
     public static boolean isValid(Byte code) {

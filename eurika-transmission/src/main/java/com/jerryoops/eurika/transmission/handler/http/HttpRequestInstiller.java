@@ -21,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HttpRequestInstiller extends ChannelOutboundHandlerAdapter {
 
-    private final int MAX_RETRY_TIMES = 3;
-
     /**
      * msg: RpcRequest object
      * out: HttpRequest object that encapsulated bytes of msg
@@ -40,27 +38,12 @@ public class HttpRequestInstiller extends ChannelOutboundHandlerAdapter {
                 bytes = compressor.compress(bytes);
                 // build http request
                 HttpRequest httpRequest = NettyUtil.buildHttpRequest(bytes, HttpMethod.POST);
-                this.writeWithRetry(ctx, httpRequest);
+                ctx.writeAndFlush(httpRequest, promise);
             }
         } catch (Exception e) {
             log.warn("Exception caught: ", e);
         } finally {
             ReferenceCountUtil.release(msg);
         }
-    }
-
-    private void writeWithRetry(ChannelHandlerContext ctx, Object message) {
-        this.retry(ctx, message,  0);
-    }
-
-    private void retry(ChannelHandlerContext ctx, Object message, int retriedTimes) {
-        ctx.writeAndFlush(message).addListener(
-                ExtraChannelFutureListener.retryListener(
-                        () -> this.retry(ctx, message, retriedTimes + 1),
-                        retriedTimes,
-                        MAX_RETRY_TIMES,
-                        5000
-                )
-        );
     }
 }

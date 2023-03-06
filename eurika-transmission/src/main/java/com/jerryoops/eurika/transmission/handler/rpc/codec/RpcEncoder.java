@@ -25,7 +25,7 @@ public class RpcEncoder extends MessageToByteEncoder<RpcMessage> {
                 this.doEncode(ctx, msg, out);
             }
         } catch (Exception e) {
-            log.warn("Exception caught: ", e); // TODO: 2023/2/26 to be filled
+            log.warn("Exception caught during encoding process: ", e);
         } finally {
             ReferenceCountUtil.release(msg);
         }
@@ -39,7 +39,7 @@ public class RpcEncoder extends MessageToByteEncoder<RpcMessage> {
         out.writeByte(message.getCompression());
         out.writeByte(message.getSerialization());
         out.writeByte(message.getType());
-        // todo 跳过待用区域（作为clientId?）
+        // 跳过待用区域
         out.writerIndex(out.writerIndex() + 7);
         out.writeLong(message.getRequestId()); // 8 Bytes
 
@@ -64,7 +64,7 @@ public class RpcEncoder extends MessageToByteEncoder<RpcMessage> {
         byte[] bodyBytes = serializer.serialize(message.getBody());
         // compress
         Compressor compressor = CompressionProtocolEnum.getCompressor(message.getCompression());
-        bodyBytes = compressor.compress(bodyBytes); // TODO: 2023/2/26 处理NPE
+        bodyBytes = compressor.compress(bodyBytes);
         return bodyBytes;
     }
 }

@@ -4,6 +4,7 @@ import com.jerryoops.eurika.common.spring.annotation.EurikaReference;
 import com.jerryoops.eurika.consumer.client.ConsumerClient;
 import com.jerryoops.eurika.consumer.functioner.ConnectionManager;
 import com.jerryoops.eurika.consumer.proxy.ReferencedServiceProxy;
+import com.jerryoops.eurika.provider.server.ProviderServer;
 import com.jerryoops.eurika.transmission.functioner.UnrespondedFutureHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;

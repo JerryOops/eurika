@@ -6,6 +6,7 @@ import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import com.jerryoops.eurika.transmission.domain.RpcResponse;
 import com.jerryoops.eurika.transmission.functioner.ServiceInvoker;
+import com.jerryoops.eurika.transmission.listener.ExtraChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ProviderInvocationHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private final ServiceInvoker serviceInvoker;
 
+    private final int MAX_RETRY_TIMES = 3;
+
     public ProviderInvocationHandler() {
         this.serviceInvoker = ApplicationContextUtil.getBean(ServiceInvoker.class);
     }
@@ -25,8 +28,24 @@ public class ProviderInvocationHandler extends SimpleChannelInboundHandler<RpcRe
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
         RpcRequest.checkValidity(request);
         RpcResponse<?> response = serviceInvoker.invoke(request);
-        ctx.pipeline().write(response);
+        this.writeWithRetry(ctx, response);
     }
+
+    private void writeWithRetry(ChannelHandlerContext ctx, Object message) {
+        this.retry(ctx, message,  0);
+    }
+
+    private void retry(ChannelHandlerContext ctx, Object message, int retriedTimes) {
+        ctx.writeAndFlush(message).addListener(
+                ExtraChannelFutureListener.retryListener(
+                        () -> this.retry(ctx, message, retriedTimes + 1),
+                        retriedTimes,
+                        MAX_RETRY_TIMES,
+                        5000
+                )
+        );
+    }
+
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
