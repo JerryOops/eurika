@@ -47,7 +47,7 @@ public class NettyConsumerClient extends ConsumerClient {
         bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // TODO: 2023/3/3 修改为配置设定
-                .handler(ChannelHandlerInitializer.forConsumer(TransmissionProtocolEnum.RPC));
+                .handler(ChannelHandlerInitializer.forConsumer(TransmissionProtocolEnum.HTTP));
     }
 
 
@@ -63,7 +63,7 @@ public class NettyConsumerClient extends ConsumerClient {
         unrespondedFutureHolder.put(request.getRequestId(), completableFuture);
 
         // 获取与目标provider的连接(一个channel实例)
-        Channel channel = connectionManager.getChannel(this.bootstrap, request.getClassName(), request.getGroup(), request.getVersion());
+        Channel channel = connectionManager.getChannel(this.bootstrap, request);
         if (null == channel || !channel.isActive()) {
             unrespondedFutureHolder.completeExceptionally(request.getRequestId(),
                     EurikaException.fail(ResultCode.EXCEPTION_CHANNEL_UNAVAILABLE, "Channel unavailable"));

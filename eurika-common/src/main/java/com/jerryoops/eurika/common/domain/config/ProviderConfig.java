@@ -1,6 +1,7 @@
 package com.jerryoops.eurika.common.domain.config;
 
 import com.jerryoops.eurika.common.constant.PropertyConstant;
+import com.jerryoops.eurika.common.enumeration.LoadBalanceEnum;
 import com.jerryoops.eurika.common.enumeration.TransmissionProtocolEnum;
 import lombok.Getter;
 import lombok.ToString;

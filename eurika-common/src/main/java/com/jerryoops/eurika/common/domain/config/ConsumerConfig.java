@@ -1,6 +1,7 @@
 package com.jerryoops.eurika.common.domain.config;
 
 import com.jerryoops.eurika.common.constant.PropertyConstant;
+import com.jerryoops.eurika.common.enumeration.LoadBalanceEnum;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -22,4 +23,12 @@ public class ConsumerConfig extends Config {
      * <p>defaultValue = 20,000 </p>
      */
     private Integer timeoutInvocation = 20000;
+
+    /**
+     * consumer在选取provider进行RPC调用时的负载均衡策略。
+     * <p>key = {super.prefix} + .loadbalance </p>
+     * <p>value = a string that represents a specific strategy of load balance </p>
+     * <p>defaultValue = random </p>
+     */
+    private String loadbalance = LoadBalanceEnum.RANDOM.getName();
 }

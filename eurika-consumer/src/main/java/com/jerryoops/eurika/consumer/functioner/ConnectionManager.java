@@ -10,9 +10,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jerryoops.eurika.common.domain.ConnectionInfo;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
+import com.jerryoops.eurika.common.domain.config.ConsumerConfig;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.domain.listener.bridge.NodeChangedBridgeListener;
+import com.jerryoops.eurika.common.enumeration.LoadBalanceEnum;
+import com.jerryoops.eurika.common.tool.config.ConfigManager;
+import com.jerryoops.eurika.common.tool.loadbalance.LoadBalancer;
 import com.jerryoops.eurika.common.util.StringEscapeUtil;
+import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +51,7 @@ public class ConnectionManager {
      * 注意value list可能为non-null empty。
      * <p>name#group#version(service specification) --> Sets.of(ConnectionInfo...) </p>
      */
-    private final Map<String, Set<ConnectionInfo>> connectedMap;
+    private final Map<String, List<ConnectionInfo>> connectedMap;
 
     /**
      * 被@EurikaReference标注，但是在注册中心不存在的路径对应的service的信息map。
@@ -117,7 +122,7 @@ public class ConnectionManager {
             serviceInfo.setVersion(version);
             unconnectedMap.put(key, serviceInfo);
         } else {
-            connectedMap.put(key, Sets.newHashSet(connectionInfoList));
+            connectedMap.put(key, connectionInfoList);
             serviceDiscoverer.doWatchProviders(serviceName, group, this.listener);
         }
     }
@@ -127,31 +132,49 @@ public class ConnectionManager {
      * 获取所有对外提供指定服务的provider对应的连接(channel)，使用负载均衡从中选取一个返回。
      * 如果该channel暂不存在(尚未连接该provider)，则进行连接。
      * @param bootstrap NettyConsumerClient的bootstrap，用于在channel不存在时创建连接。
-     * @param serviceName
-     * @param group
-     * @param version
+     * @param request 准备发出的RpcRequest
      * @return
      */
-    public Channel getChannel(Bootstrap bootstrap, String serviceName, String group, String version) {
+    public Channel getChannel(Bootstrap bootstrap, RpcRequest request) {
+        final String serviceName = request.getClassName();
+        final String group = request.getGroup();
+        final String version = request.getVersion();
+
         // 检查本地缓存中是否有符合要求的provider之channel
         String key = this.generateKey(serviceName, group, version);
         if (unconnectedMap.containsKey(key)) {
-            // 初始化时，指定的service信息是非法的(在注册中心内不存在)、或者getChildren时出现异常，被加入了unconnectedMap中，现尝试在注册中心中重找。
-            // TODO: 2023/3/4 重试、重新在registry中寻找
-            return null;
+            // 初始化时，指定的service信息是非法的(在注册中心内不存在)、或者getChildren时出现异常：
+            // path被加入了unconnectedMap中，并且没有注册子节点listener。现尝试在注册中心中重找、注册子节点listener一次。
+            List<ConnectionInfo> connectionInfoList = serviceDiscoverer.doDiscover(serviceName, group, version);
+            if (null == connectionInfoList) {
+                // path在注册中心仍然不存在
+                log.warn("Given service specification is not found within registry center: " +
+                        "[serviceName = {}, group = {}, version = {}]", serviceName, group, version);
+                return null;
+            }
+            // path在注册中心存在了
+            unconnectedMap.remove(key);
+            connectedMap.put(key, connectionInfoList);
+            serviceDiscoverer.doWatchProviders(serviceName, group, this.listener);
         }
-        Set<ConnectionInfo> connectionInfoSet = connectedMap.get(key);
-        if (null == connectionInfoSet || connectionInfoSet.isEmpty()) {
+
+        List<ConnectionInfo> connectionInfoList = connectedMap.get(key);
+        if (null == connectionInfoList || connectionInfoList.isEmpty()) {
             // null: 传入的service信息是非法的，因为它既不在unconnectedMap中，也不在connectedMap中。
             // isEmpty: 传入的service信息是合法的，并且在connectedMap中，但是没有provider提供该服务。
-            log.error("The service information itself is invalid, " +
+            log.error("The service specification itself is invalid, " +
                     "or there exists no available providers corresponding to it currently: " +
                     "[serviceName = {}, group = {}, version = {}]", serviceName, group, version);
             return null;
         }
-        // TODO: 2023/3/4 添加feature: 在获取一个channel失败后，尝试从connectionInfos中获取另一个channel. 
-        // TODO: 2023/3/4 load balance to be fulfilled, now use first element only
-        ConnectionInfo connectionInfo = Lists.newArrayList(connectionInfoSet).get(0);
+        // TODO: 2023/3/4 添加feature: 在获取一个channel失败后，尝试从connectionInfos中获取另一个channel.
+        ConnectionInfo connectionInfo;
+        ConsumerConfig config = ConfigManager.getConsumerConfig();
+        if (LoadBalanceEnum.CONSISTENT_HASH.getName().equals(config.getLoadbalance())) {
+            connectionInfo = LoadBalancer.CONSISTENT_HASH.select(key, request.getMethodName(), connectionInfoList);
+        } else {
+            connectionInfo = LoadBalancer.RANDOM.select(connectionInfoList);
+        }
         Channel channel = connectionInfo.getChannel();
         if (null != channel && channel.isActive()) {
             return channel;
@@ -193,10 +216,8 @@ public class ConnectionManager {
         connectedMap.compute(key, (k, v) -> {
             if (null == v) {
                 // 不存在与key对应的value
-                return Sets.newHashSet(connectionInfo);
+                return Lists.newArrayList(connectionInfo);
             } else {
-                // ConnectionInfo的equals和hashcode方法均被重写为只考虑host/port属性，
-                // 因此如果相同host/port属性的元素在v中已存在，则不会添加connectionInfo
                 v.add(connectionInfo);
                 return v;
             }
@@ -210,18 +231,18 @@ public class ConnectionManager {
      */
     private void remove(String key, ConnectionInfo connectionInfo) {
         synchronized (connectedMap) {
-            Set<ConnectionInfo> connectionInfoSet = connectedMap.get(key);
-            if (null == connectionInfoSet) {
+            List<ConnectionInfo> connectionInfoList = connectedMap.get(key);
+            if (null == connectionInfoList) {
                 log.warn("Attempting to remove an entry from connectedMap using non-existed key: {}", key);
                 return;
             }
-            if (connectionInfoSet.isEmpty()) {
+            if (connectionInfoList.isEmpty()) {
                 connectedMap.remove(key);
                 return;
             }
-            // ConnectionInfo的equals和hashcode方法均被重写为只考虑host/port属性，
-            // 因此可以直接调用remove()方法删除connectionInfoSet中具有与connectionInfo相同host/port的元素
-            connectionInfoSet.remove(connectionInfo);
+            // ConnectionInfo的equals方法被重写为只考虑host/port属性，
+            // 因此可以直接调用remove()方法删除connectionInfoList中具有与connectionInfo相同host/port的元素
+            connectionInfoList.remove(connectionInfo);
         }
     }
 

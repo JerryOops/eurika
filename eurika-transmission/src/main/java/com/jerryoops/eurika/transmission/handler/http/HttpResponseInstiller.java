@@ -1,6 +1,10 @@
 package com.jerryoops.eurika.transmission.handler.http;
 
+import com.jerryoops.eurika.common.enumeration.CompressionProtocolEnum;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
+import com.jerryoops.eurika.common.enumeration.SerializationProtocolEnum;
+import com.jerryoops.eurika.common.tool.compression.Compressor;
+import com.jerryoops.eurika.common.tool.serialization.Serializer;
 import com.jerryoops.eurika.common.util.JsonUtil;
 import com.jerryoops.eurika.common.util.NettyUtil;
 import com.jerryoops.eurika.transmission.domain.RpcResponse;
@@ -22,19 +26,25 @@ public class HttpResponseInstiller extends ChannelOutboundHandlerAdapter {
 
     /**
      * msg: RpcResponse object
-     * out: HttpResponse object that encapsulated json string of RpcResponse
+     * out: HttpResponse object that encapsulated bytes of msg
      */
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         try {
             if (msg instanceof RpcResponse) {
                 RpcResponse<?> response = (RpcResponse<?>) msg;
-                String json = JsonUtil.toJson(response);
-                HttpResponse httpResponse = NettyUtil.buildHttpResponse(json, ResultCode.mapHttp(response.getCode()));
+                // serialize
+                Serializer serializer = SerializationProtocolEnum.PROTOSTUFF.getSerializer();
+                byte[] bytes = serializer.serialize(response);
+                // compress
+                Compressor compressor = CompressionProtocolEnum.GZIP.getCompressor();
+                bytes = compressor.compress(bytes);
+                // build http response
+                HttpResponse httpResponse = NettyUtil.buildHttpResponse(bytes, ResultCode.mapHttp(response.getCode()));
                 this.writeWithRetry(ctx, httpResponse);
             }
         } catch (Exception e) {
-            log.info("Exception caught: ", e);
+            log.warn("Exception caught: ", e);
         } finally {
             ReferenceCountUtil.release(msg);
         }

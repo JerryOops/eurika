@@ -29,11 +29,6 @@ public class ConnectionInfo {
     private Channel channel;
 
     @Override
-    public int hashCode() {
-        return host.hashCode() + port.hashCode();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return (ConnectionInfo.class.equals(obj.getClass())) &&
                 Objects.equals(this.host, ((ConnectionInfo) obj).getHost()) &&

@@ -1,18 +1,12 @@
 package com.jerryoops.eurika.transmission.domain;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.enumeration.ResultCode;
-import com.jerryoops.eurika.common.util.JsonUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 @Data
 @Slf4j
@@ -63,50 +57,4 @@ public class RpcRequest implements Serializable {
         }
     }
 
-    /**
-     * 用于将json字符串转变为RpcRequest对象。
-     * 这一过程不能够直接调用JsonUtil.fromJson()，因为parameters中的每个元素的类型是一一对应地定义在parameterTypes之中的。
-     * @param json
-     * @return
-     */
-    public static RpcRequest parseJson(String json) {
-        JsonObject requestJsonObject = JsonParser.parseString(json).getAsJsonObject();
-        JsonArray parameterTypesJsonArray = Optional.ofNullable(requestJsonObject.get("parameterTypes")).map(JsonElement::getAsJsonArray).orElse(null);
-        JsonArray parametersJsonArray = Optional.ofNullable(requestJsonObject.get("parameters")).map(JsonElement::getAsJsonArray).orElse(null);
-        // RpcRequest, without field parameterTypes and parameters
-        requestJsonObject.remove("parameterTypes");
-        requestJsonObject.remove("parameters");
-        RpcRequest request = JsonUtil.fromJson(requestJsonObject, RpcRequest.class);
-        if (null == parameterTypesJsonArray || null == parametersJsonArray) {
-            // JSON中不存在 parameterTypes / parameters
-            throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM,
-                    "'parameterTypes' or 'parameters' not presented", request.getRequestId());
-        }
-        // Manually create the two fields
-        int size = parameterTypesJsonArray.size();
-        if (size != parametersJsonArray.size()) {
-            throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM,
-                    "Count mismatch found between 'parameterTypes' and 'parameters'", request.getRequestId());
-        }
-        Class<?>[] parameterTypes = new Class[size];
-        Object[] parameters = new Object[size];
-        int i = 0;
-        try {
-            for (; i < size; i ++) {
-                parameterTypes[i] = JsonUtil.fromJson(parameterTypesJsonArray.get(i), Class.class);
-                parameters[i] = JsonUtil.fromJson(parametersJsonArray.get(i), parameterTypes[i]);
-            }
-        } catch (Exception e) {
-            if (e.getCause() instanceof ClassNotFoundException) {
-                throw EurikaException.fail(ResultCode.EXCEPTION_CLASS_NOT_FOUND,
-                        "ClassNotFound exception caught during processing " + parameterTypesJsonArray.get(i),
-                        request.getRequestId());
-            } else {
-                throw e;
-            }
-        }
-        request.setParameterTypes(parameterTypes);
-        request.setParameters(parameters);
-        return request;
-    }
 }
