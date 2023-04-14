@@ -4,7 +4,6 @@ import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.spring.annotation.EurikaReference;
 import com.jerryoops.eurika.common.tool.config.ConfigManager;
 import com.jerryoops.eurika.common.tool.id.IdGenerator;
-import com.jerryoops.eurika.common.util.ApplicationContextUtil;
 import com.jerryoops.eurika.consumer.client.ConsumerClient;
 import com.jerryoops.eurika.common.domain.listener.callback.CallbackListener;
 import com.jerryoops.eurika.transmission.domain.RpcRequest;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeoutException;
  * <p>在调用方的代码中，当一个service域被@EurikaReference标注时，对这个service的方法调用实际上是本代理类实现的。</p>
  */
 @Slf4j
-public class ReferencedServiceProxy implements InvocationHandler {
+public class ReferencedServiceInvocationHandler implements InvocationHandler {
 
     // RPC调用中，消费者一端的、负责发送和接收RPC信息的client实例
     private final ConsumerClient consumerClient;
@@ -38,7 +37,7 @@ public class ReferencedServiceProxy implements InvocationHandler {
 
 
     // constructor
-    public ReferencedServiceProxy(ConsumerClient consumerClient, UnrespondedFutureHolder unrespondedFutureHolder, EurikaReference annotationMetadata) {
+    public ReferencedServiceInvocationHandler(ConsumerClient consumerClient, UnrespondedFutureHolder unrespondedFutureHolder, EurikaReference annotationMetadata) {
         this.consumerClient = consumerClient;
         this.annotationMetadata = annotationMetadata;
         this.unrespondedFutureHolder = unrespondedFutureHolder;
