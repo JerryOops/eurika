@@ -126,10 +126,10 @@ public class ReferencedServiceInvocationHandler implements InvocationHandler {
             return (CallbackListener) constructor.newInstance();
         } catch (NoSuchMethodException e) {
             log.error("No-arg constructor does not exist in {}, " +
-                    "WILL NOT be able to get result or execute callback method", listenerClazz);
+                    "WILL NOT be able to get result or execute callback method", listenerClazz, e);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             log.error("Error occurred during instantiating {}," +
-                    "WILL NOT be able to get result or execute callback method", listenerClazz);
+                    "WILL NOT be able to get result or execute callback method", listenerClazz, e);
         }
         return null;
     }
