@@ -37,7 +37,7 @@ public class ConsistentHashLoadBalancer {
             return null;
         }
         if (list.size() == 1) {
-            return Lists.newArrayList(list).get(0);
+            return list.get(0);
         }
         // 使用serviceKey，从selectorMap中取出其对应的一致性哈希选择器
         ConsistentHashSelector selector = selectorMap.get(serviceKey);

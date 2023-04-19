@@ -7,11 +7,9 @@ import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.jerryoops.eurika.common.domain.ConnectionInfo;
 import com.jerryoops.eurika.common.domain.ServiceInfo;
 import com.jerryoops.eurika.common.domain.config.ConsumerConfig;
-import com.jerryoops.eurika.common.domain.exception.EurikaException;
 import com.jerryoops.eurika.common.domain.listener.bridge.NodeChangedBridgeListener;
 import com.jerryoops.eurika.common.enumeration.LoadBalanceEnum;
 import com.jerryoops.eurika.common.tool.config.ConfigManager;
@@ -21,15 +19,14 @@ import com.jerryoops.eurika.transmission.domain.RpcRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +63,10 @@ public class ConnectionManager {
      * 用于监听关心的服务provider节点的变化（添加、删除），并同步至connectedMap中。
      */
     private final NodeChangedBridgeListener listener;
+    /**
+     * 用作一致性哈希负载均衡时的selectionKey
+     */
+    private final String localhost;
 
     {
         connectedMap = new ConcurrentHashMap<>();
@@ -96,6 +97,11 @@ public class ConnectionManager {
                 remove(key, connectionInfo);
             }
         };
+        try {
+            localhost = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -170,7 +176,7 @@ public class ConnectionManager {
         ConnectionInfo connectionInfo;
         ConsumerConfig config = ConfigManager.getConsumerConfig();
         if (LoadBalanceEnum.CONSISTENT_HASH.getName().equals(config.getLoadbalance())) {
-            connectionInfo = LoadBalancer.CONSISTENT_HASH.select(key, request.getMethodName(), connectionInfoList);
+            connectionInfo = LoadBalancer.CONSISTENT_HASH.select(key, localhost, connectionInfoList);
         } else {
             connectionInfo = LoadBalancer.RANDOM.select(connectionInfoList);
         }
