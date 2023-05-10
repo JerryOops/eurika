@@ -50,7 +50,7 @@ public class RpcRequest implements Serializable {
      */
     public static void checkValidity(RpcRequest request) {
         if (null == request || null == request.getRequestId() || StringUtils.isBlank(request.getClassName()) ||
-                StringUtils.isBlank(request.getMethodName()) || null == request.getParameterTypes() || null == request.getParameters() ||
+                StringUtils.isBlank(request.getMethodName()) || null == request.getParameterTypes() ||
                 null == request.getVersion() || null == request.getGroup()) {
             throw EurikaException.fail(ResultCode.EXCEPTION_INVALID_PARAM, "RpcRequest with invalid parameter(s): " + request,
                     (null == request) ? null : request.getRequestId());
