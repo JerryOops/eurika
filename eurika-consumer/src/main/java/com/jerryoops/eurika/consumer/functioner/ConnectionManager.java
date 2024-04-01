@@ -221,6 +221,7 @@ public class ConnectionManager {
         connectedMap.compute(key, (k, v) -> {
             if (null == v) {
                 // 不存在与key对应的value
+                // TODO: 2024/4/1 这里可能需要重新设计一下：1.List的遍历效率较慢，有无O(1)的数据结构；2.List可能需要有同步措施
                 return Lists.newArrayList(connectionInfo);
             } else {
                 v.add(connectionInfo);
