@@ -41,11 +41,12 @@ public class ConsistentHashLoadBalancer {
         }
         // 使用serviceKey，从selectorMap中取出其对应的一致性哈希选择器
         ConsistentHashSelector selector = selectorMap.get(serviceKey);
-        int hashId = System.identityHashCode(list);
+        // 此处使用list.hashCode()是重写过的，它会根据list中的元素增减而变化。
+        int listHashId = list.hashCode();
         // 如果selectorMap中不存在serviceKey对应的selector，
-        // 或者selector存在于selectorMap、但是它的标识符(hashId)与本次生成的不一样（说明待选取的列表内容发生了改变，则重新生成一个selector）
-        if (selector == null || selector.hashId != hashId) {
-            selector = new ConsistentHashSelector(list, 160, hashId);
+        // 或者selector存在于selectorMap、但是它的标识符(listHashId)与本次生成的不一样（说明待选取的列表内容发生了改变，则重新生成一个selector）
+        if (selector == null || selector.hashId != listHashId) {
+            selector = new ConsistentHashSelector(list, 160, listHashId);
             selectorMap.put(serviceKey, selector);
         }
         return selector.select(selectionKey);
