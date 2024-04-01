@@ -74,6 +74,8 @@ public class ReferencedServiceInvocationHandler implements InvocationHandler {
             return null;
         }
 
+        // TODO: 2024/4/1 首先，每次都反射生成一个新的CallbackListener实例，这是一个性能不好的方式；
+        //  其次，应该实现为类似Dubbo的CompletableFuture形式的异步调用接口，以下这种方式需要被删除掉
         // async call
         CallbackListener listener = this.buildCallbackListener();
         if (null == listener) {
