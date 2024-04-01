@@ -32,7 +32,7 @@ public class CuratorConnectionListener implements ConnectionStateListener {
 
         if (newState == ConnectionState.CONNECTED) {
             latestSessionId = sessionId;
-            log.warn("state = CONNECTED, sessionId = {}", Long.toHexString(sessionId));
+            log.info("state = CONNECTED, sessionId = {}", Long.toHexString(sessionId));
 
         } else if (newState == ConnectionState.SUSPENDED) {
             log.warn("state = SUSPENDED");
@@ -41,11 +41,11 @@ public class CuratorConnectionListener implements ConnectionStateListener {
             // 重新建立到zookeeper的连接：需要判断是否复用同一个session
             if (latestSessionId == sessionId && sessionId != INITIAL_SESSION_ID) {
                 // 复用了同一个session，且新获取的sessionId不为INITIAL_SESSION_ID，即说明复用了同一session
-                log.warn("state = RECONNECTED, reused sessionId = {}", Long.toHexString(sessionId));
+                log.info("state = RECONNECTED, reused sessionId = {}", Long.toHexString(sessionId));
             } else {
                 // 重新建立了一个新的session，需要更新latestSessionId
                 latestSessionId = sessionId;
-                log.warn("state = RECONNECTED, a new session is rebuilt after old session expired," +
+                log.info("state = RECONNECTED, a new session is rebuilt after old session expired," +
                         " old sessionId = {}, new sessionId = {}", Long.toHexString(latestSessionId), Long.toHexString(sessionId));
                 registryService.reregisterAll();
             }
